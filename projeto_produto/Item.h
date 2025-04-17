@@ -2,6 +2,8 @@
 #define ITEM_H
 #include <bits/stdc++.h>
 #include "Produto.h"
+#include "Categoria.h"
+#include "Pedido.h"
 
 using namespace std;
 
@@ -10,6 +12,8 @@ class item{
         int numero;
         int quantidade;
         Produto produto;
+        Categoria categoria;
+        vector<Pedido> pedidos; //* instância para um vetor de pedidos
     
     public:
         item();
@@ -17,6 +21,8 @@ class item{
         item(const int& numero, const int& quantidade);
 
         item(const int& numero, const int& quantidade, const Produto& produto);
+
+        item(const int& numero, const int& quantidade, const Produto& produto, const Categoria& categoria);
 
         void exibir_item();
 
@@ -28,6 +34,19 @@ class item{
 
         void setProduto(const Produto&);
         Produto getProduto() const;
+
+        void setCategoria(const Categoria&);
+        Categoria getCategoria() const;
+
+        //* Métodos para os pedidos
+
+        //* Gets e Sets de Pedidos
+        void setPedidos(const vector<Pedido>&);
+        vector<Pedido> getPedidos() const;
+
+        Pedido getPedidoPorCodigo(const int& codigo) const; //* Procurando um determinado pedido através de seu código
+
+        void adicionarPedido(const Pedido& p); //* Método para adicionar um pedido ao vetor de Pedidos
 };
 
 #endif

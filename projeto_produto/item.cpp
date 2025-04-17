@@ -1,21 +1,24 @@
-// #include <bits/stdc++.h>
-#include <iostream>
+#include <bits/stdc++.h>
 #include "Item.h"
-// #include "Produto.h"
+#include "Categoria.h"
 
 using namespace std;
 
-    item::item() {}
+    item::item() {} //* Construtor vazio, padrão usado para inicializar valores sem a necessidade de parâmetros/argumentos
 
-    item::item(const int& numero, const int& quantidade)
+    item::item(const int& numero, const int& quantidade) //* Construtor que inicializa os atributos numero e quantidade
         :numero(numero), quantidade(quantidade) {}
 
     item::item(const int& numero, const int& quantidade, const Produto& produto)
         : numero(numero), quantidade(quantidade), produto(produto) {}
 
+    item::item(const int& numero, const int& quantidade, const Produto& produto, const Categoria& categoria)
+        : numero(numero), quantidade(quantidade), produto(produto), categoria(categoria) {}
+
     void item::exibir_item(){
         cout << "Printando DADOS: " << endl;
         cout << "Número do Produto: " << numero << "\n" << "Quantidade do Produto: " << quantidade << endl;
+        cout << "Categoria do item: " << categoria.categoriaToString() << endl; //* Imprimindo a categoria como string e não como enum pela função categoriaToString()
 
         produto.apresentar_produto();
     }
@@ -43,3 +46,12 @@ using namespace std;
     Produto item::getProduto() const {
         return this->produto;
     }
+
+    void item::setCategoria(const Categoria& categoria){
+        this->categoria = categoria;
+    }
+
+    Categoria item::getCategoria() const {
+        return this->categoria;
+    }
+
