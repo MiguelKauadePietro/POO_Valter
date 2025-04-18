@@ -1,69 +1,97 @@
-#include <bits/stdc++.h>
-#include "Funcionario.h" //! Incluindo o corpo da classe
+#include "Funcionario.h"
+#include <iostream>
 
 using namespace std;
 
+Funcionario::Funcionario(int c, string n, int i, Endereco& end, const Cargo& car)
+    : codigo(c), nome(n), idade(i), endereco(end), cargo(car) {}
 
-Funcionario::Funcionario(int c, std::string n, int i)
-    :codigo(c), nome(n), idade(i){}
+Funcionario::Funcionario(int c, string n, int i, Endereco& end)
+    : codigo(c), nome(n), idade(i), endereco(end) {}
 
+Funcionario::Funcionario(string n, int i)
+    : codigo(0), nome(n), idade(i) {}
 
-void Funcionario::apresentar(){
-    cout << "DADOS DO FUNCIONÁRIO" << endl;
-    cout << "Código: " << codigo << endl;
+Funcionario::Funcionario() {}
+
+void Funcionario::apresentar() const {
+    cout << "--- PRINTANDO DADOS ---" << endl;
+
+    cout << "Codigo: " << codigo << endl;
     cout << "Nome: " << nome << endl;
     cout << "Idade: " << idade << endl;
+    cout << "Cargo: " << cargo.toString() << endl;
+
+    endereco.exibirEndereco();
+
+    cout << "Projetos do funcionário:" << endl;
+    for (const Projeto& p : projetos) {
+        p.imprimir();
+    }
+
+    cout << "------------------" << endl;
 }
 
-void Funcionario::setCodigo(int c){
-    this->codigo = c;
+void Funcionario::setEndereco(const Endereco& end) {
+    this->endereco = end;
 }
 
-int Funcionario::getCodigo(){
+Endereco Funcionario::getEndereco() {
+    return this->endereco;
+}
+
+void Funcionario::setCodigo(const int codigo) {
+    this->codigo = codigo;
+}
+
+int Funcionario::getCodigo() {
     return codigo;
 }
 
-void Funcionario::setNome(std::string n){
-    this->nome = n;
+void Funcionario::setNome(const string nome) {
+    this->nome = nome;
 }
 
-std::string Funcionario::getNome(){
+string Funcionario::getNome() {
     return nome;
 }
 
-void Funcionario::setIdade(int i){
-    this->idade = i;
+void Funcionario::setIdade(const int idade) {
+    this->idade = idade;
 }
 
-int Funcionario::getIdade(){
+int Funcionario::getIdade() const {
     return idade;
 }
 
-int main()
-{
-    //! Forma estática de instanciar uma classe
-    // Funcionario Binho(1, "Binho", 19);
-    // Binho.apresentar();
+void Funcionario::setCargo(const Cargo& c) {
+    this->cargo = c;
+}
 
-    //! Forma dinâmica de instanciar uma classe
-    // Funcionario *Binho = new Funcionario(1, "Binho", 19);
-    // Binho->apresentar();
-    // delete Binho; //! Apagando o objeto alocado
+Cargo Funcionario::getCargo() {
+    return this->cargo;
+}
 
-    //! Exemplo:
-    Funcionario c(1, "Carlos", 30);
-    Funcionario r(2, "Roberta", 47);
-    Funcionario v(3, "Valter", 50);
+// Métodos para projetos
 
-    c.apresentar();
-    r.apresentar();
-    v.apresentar();
+void Funcionario::setProjetos(const vector<Projeto>& novosProjetos) {
+    this->projetos = novosProjetos;
+}
 
-    cin.get();
+vector<Projeto> Funcionario::getProjetos() const {
+    return this->projetos;
+}
 
-    c.setIdade(32);
+Projeto Funcionario::getProjetoPorCodigo(const int codigo) const {
+    for (const Projeto& p : projetos) {
+        if (p.getCodigo() == codigo) {
+            return p;
+        }
+    }
+    throw std::runtime_error("Projeto com o código informado não encontrado.");
+}
 
-    cout << "A idade do " << c.getNome() << " foi mudada para " << c.getIdade() << endl;
 
-    return 0;
+void Funcionario::adicionarProjeto(const Projeto& p) {
+    projetos.push_back(p);
 }

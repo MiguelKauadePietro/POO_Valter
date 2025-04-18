@@ -9,11 +9,9 @@ Pedido::Pedido(const int& codigo, const string& nome)
     : codigo(codigo), nome(nome) {}
 
 void Pedido::imprimindo_pedido() const{
-    cout << "--------------------------" << endl;
     cout << "IMPRIMINDO DADOS DO PEDIDO" << endl;
     cout << "Nome do pedido: " << nome << endl;
     cout << "Código do pedido: " << codigo << endl;
-    cout << "--------------------------" << endl;
 }
 
 void Pedido::setCodigoPedido(const int& c){

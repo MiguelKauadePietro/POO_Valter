@@ -1,24 +1,50 @@
-#include <bits/stdc++.h>
 #ifndef FUNCIONARIO_H
 #define FUNCIONARIO_H
-#endif
+
+#include "Endereco.h"
+#include "Cargo.cpp"
+#include "Projeto.h"
+#include <vector>
 
 using namespace std;
 
-class Funcionario{
-    private: //! Atributos
+class Funcionario {
+private:
     int codigo;
-    std::string nome;
+    string nome;
     int idade;
+    Endereco endereco;
+    Cargo cargo;
+    vector<Projeto> projetos; // Lista dinâmica de projetos
 
-    public: //! Métodos
-    Funcionario(int c, std::string n, int i); //! Criando um construtor(assinatura) dos métodos para que os atributos sejam inicializados com algum valor
-    void apresentar();
-    void setCodigo(int c);
+public:
+    Funcionario(int c, string n, int i, Endereco& endereco, const Cargo&);
+    Funcionario(int c, string n, int i, Endereco& endereco);
+    Funcionario(string, int);
+    Funcionario();
+
+    void apresentar() const;
+
+    void setCodigo(const int);
     int getCodigo();
-    void setNome(std::string s);
-    std::string getNome();
-    void setIdade(int i);
-    int getIdade();
 
+    void setNome(const string);
+    string getNome();
+
+    void setIdade(const int);
+    int getIdade() const;
+
+    void setEndereco(const Endereco&);
+    Endereco getEndereco();
+
+    void setCargo(const Cargo&);
+    Cargo getCargo();
+
+    // Métodos relacionados a projetos
+    void setProjetos(const vector<Projeto>&);
+    vector<Projeto> getProjetos() const;
+    Projeto getProjetoPorCodigo(const int codigo) const;
+    void adicionarProjeto(const Projeto& p);  // Método para adicionar um projeto
 };
+
+#endif
