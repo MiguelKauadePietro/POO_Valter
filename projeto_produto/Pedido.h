@@ -8,12 +8,12 @@ using namespace std;
 class Pedido{
     private:
         int codigo;
-        string nome;
+        string descricao;
 
     public:
 
     Pedido(); //* Construtor padrão
-    Pedido(const int& codigo, const string& nome); //* Construtor com parâmetros
+    Pedido(const int& codigo, const string& descricao); //* Construtor com parâmetros
 
     //* Printando os dados do pedido
     void imprimindo_pedido() const;

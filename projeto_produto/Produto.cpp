@@ -4,11 +4,11 @@
 
 using namespace std;
 
-Produto::Produto() {}
-Produto::Produto(const int c, const string n, const float p)
-    :codigo(c), nome(n), preco(p){}
+Produto::Produto() {} //* Construtor Vazio, para padronização de inicialização
+Produto::Produto(const int& c, const string& n, const float& p) //* Construtor Parâmetrizado
+    :codigo(c), nome(n), preco(p){} //* Lista de inicialização
 
-void Produto::apresentar_produto(){
+void Produto::apresentar_produto() const{ //* Função que printa os dados do produto(Código, Nome e Preço)
     cout << "DADOS DO PRODUTO" << endl;
 
     cout << "Código: " << codigo << endl;
@@ -17,7 +17,7 @@ void Produto::apresentar_produto(){
 
 }
 
-void Produto::setCodigo(const int c){
+void Produto::setCodigo(const int& c){
     this->codigo = c;
 }
 
@@ -25,7 +25,7 @@ int Produto::getCodigo() const{
     return codigo;
 }
 
-void Produto::setNome(const string n){
+void Produto::setNome(const string& n){
     this->nome = n;
 }
 
@@ -33,7 +33,7 @@ string Produto::getNome() const {
     return nome;
 }
 
-void Produto::setPreco(const float p){
+void Produto::setPreco(const float& p){
     this->preco = p;
 }
 

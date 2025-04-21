@@ -5,13 +5,13 @@ using namespace std;
 
 Pedido::Pedido() {}
 
-Pedido::Pedido(const int& codigo, const string& nome)
-    : codigo(codigo), nome(nome) {}
+Pedido::Pedido(const int& codigo, const string& descricao)
+    : codigo(codigo), descricao(descricao) {}
 
 void Pedido::imprimindo_pedido() const{
     cout << "IMPRIMINDO DADOS DO PEDIDO" << endl;
-    cout << "Nome do pedido: " << nome << endl;
     cout << "Código do pedido: " << codigo << endl;
+    cout << "Descrição do pedido: " << descricao << endl;
 }
 
 void Pedido::setCodigoPedido(const int& c){
@@ -22,11 +22,11 @@ int Pedido::getCodigoPedido() const {
     return this->codigo;
 }
 
-void Pedido::setNomePedido(const string& n){
-    this->nome = n;
+void Pedido::setNomePedido(const string& d){
+    this->descricao = d;
 }
 
 string Pedido::getNomePedido() const {
-    return this->nome;
+    return this->descricao;
 }
 

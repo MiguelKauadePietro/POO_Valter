@@ -16,13 +16,13 @@ class Produto{
     public:
 
         Produto();
-        Produto(const int c, const string n, const float p);
-        void apresentar_produto();
-        void setCodigo(const int c);
+        Produto(const int& c, const string& n, const float& p);
+        void apresentar_produto() const;
+        void setCodigo(const int& c);
         int getCodigo() const;
-        void setNome(const string n);
+        void setNome(const string& n);
         string getNome() const;
-        void setPreco(const float p);
+        void setPreco(const float& p);
         float getPreco() const;
 };
 
