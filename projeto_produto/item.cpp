@@ -4,25 +4,26 @@
 
 using namespace std;
 
-    item::item() {} //* Construtor vazio, padrão usado para inicializar valores sem a necessidade de parâmetros/argumentos
+    Item::Item() {} //* Construtor vazio, padrão usado para inicializar valores sem a necessidade de parâmetros/argumentos
 
-    item::item(const int& numero, const int& quantidade) //* Construtor que inicializa os atributos numero e quantidade
+    Item::Item(const int& numero, const int& quantidade) //* Construtor que inicializa os atributos numero e quantidade
         :numero(numero), quantidade(quantidade) {}
 
-    item::item(const int& numero, const int& quantidade, const Produto& produto)
+    Item::Item(const int& numero, const int& quantidade, const Produto& produto)
         : numero(numero), quantidade(quantidade), produto(produto) {}
 
-    item::item(const int& numero, const int& quantidade, const Produto& produto, const Categoria& categoria)
+    Item::Item(const int& numero, const int& quantidade, const Produto& produto, const Categoria& categoria)
         : numero(numero), quantidade(quantidade), produto(produto), categoria(categoria) {}
 
-    void item::exibir_item(){
+    void Item::exibir_item(){
         cout << "--------------------------------------------" << endl;
         cout << "Printando DADOS: " << endl;
         cout << "Número do Produto: " << numero << "\n" << "Quantidade do Produto: " << quantidade << endl;
-        cout << "Categoria do item: " << categoria.categoriaToString() << endl; //* Imprimindo a categoria como string e não como enum pela função categoriaToString()
+        cout << "Categoria do Item: " << categoria.categoriaToString() << endl; //* Imprimindo a categoria como string e não como enum pela função categoriaToString()
 
         produto.apresentar_produto();
 
+        cout << "\nPedidos relacionados a este item:\n";
         for (const Pedido& pedido: pedidos)
         {
             pedido.imprimindo_pedido();
@@ -31,7 +32,7 @@ using namespace std;
         cout << "--------------------------------------------" << endl;
     }
 
-    Pedido item::getPedidoPorCodigo(const int& codigo) const{
+    Pedido Item::getPedidoPorCodigo(const int& codigo) const{
         for(const Pedido& pedido: pedidos){
             if(pedido.getCodigoPedido() == codigo){
                 return pedido;
@@ -40,41 +41,41 @@ using namespace std;
         throw runtime_error("Esse código não pertence à nenhum Pedido.");
     }
 
-    void item::adicionarPedido(const Pedido& pedido){
+    void Item::adicionarPedido(const Pedido& pedido){
         pedidos.push_back(pedido);
     }
 
     //* Métdos Gets e Sets
 
-    void item::setNumero(const int& num){
+    void Item::setNumero(const int& num){
         this->numero = num;
     }
 
-    int item::getNumero() const{
+    int Item::getNumero() const{
         return this->numero;
     }
 
-    void item::setQuantidade(const int& qtd){
+    void Item::setQuantidade(const int& qtd){
         this->quantidade = qtd;
     }
 
-    int item::getQuantidade() const {
+    int Item::getQuantidade() const {
         return this->quantidade;
     }
 
-    void item::setProduto(const Produto& produto){
+    void Item::setProduto(const Produto& produto){
         this->produto = produto;
     }
 
-    Produto item::getProduto() const {
+    Produto Item::getProduto() const {
         return this->produto;
     }
 
-    void item::setCategoria(const Categoria& categoria){
+    void Item::setCategoria(const Categoria& categoria){
         this->categoria = categoria;
     }
 
-    Categoria item::getCategoria() const {
+    Categoria Item::getCategoria() const {
         return this->categoria;
     }
 

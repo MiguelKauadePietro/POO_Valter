@@ -103,7 +103,7 @@ void listarProdutos(const vector<Produto>& produtos){
 }
 
 //* CADASTRANDO UM NOVO PEDIDO
-void cadastrarPedido(vector<item>& itens){
+void cadastrarPedido(vector<Item>& itens){
     if(itens.empty()){ //* VERIFICANDO SE ALGUM ITEM JÁ FOI CADASTRADO, PARA QUE EU POSSA CRIAR PEDIDOS
         cout << "Nenhum item cadastrado. Cadastre itens antes de criar pedidos.\n";
         return; //* SAI DA FUNÇÃO
@@ -136,7 +136,7 @@ void cadastrarPedido(vector<item>& itens){
     cout << "Item com esse número não encontrado.\n"; //* Só é possível chegar aqui se não achou nenhum item condizente com o códigoItem
 }
 
-void removerItemPedido(vector<item>& itens, vector<Pedido> pedidos){
+void removerItemPedido(vector<Item>& itens, vector<Pedido> pedidos){
     int codigoItem, codigoPedido;
 
     cout << "Exiba o código do item no qual deseja remover o pedido: " << endl;
@@ -164,16 +164,8 @@ void removerItemPedido(vector<item>& itens, vector<Pedido> pedidos){
     cout << "Item com esse código não encontrado." << endl;
 }
 
-void adicionarItensPedidos(item it, vector<Pedido> pedidos){
-    int codigoItem;
-
-    cout << "Insira código do item para adicionar um pedido à ele: " << endl;
-    cin >> codigoItem;
-    pedidos = it.getPedidos();
-
-    if(pedidos.empty()){
-        
-    }
+void adicionarItensPedidos(const vector<Item>& itens, vector<Pedido>& pedidos){
+    int codigoPedido;
 }
 
 

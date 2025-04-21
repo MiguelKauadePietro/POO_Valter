@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class item{
+class Item{
     private:
         int numero;
         int quantidade;
@@ -16,13 +16,13 @@ class item{
         vector<Pedido> pedidos; //* instância para um vetor de pedidos
     
     public:
-        item();
+        Item();
 
-        item(const int& numero, const int& quantidade);
+        Item(const int& numero, const int& quantidade);
 
-        item(const int& numero, const int& quantidade, const Produto& produto);
+        Item(const int& numero, const int& quantidade, const Produto& produto);
 
-        item(const int& numero, const int& quantidade, const Produto& produto, const Categoria& categoria);
+        Item(const int& numero, const int& quantidade, const Produto& produto, const Categoria& categoria);
 
         void exibir_item();
 
