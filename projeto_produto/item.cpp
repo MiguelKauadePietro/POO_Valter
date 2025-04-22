@@ -79,3 +79,10 @@ using namespace std;
         return this->categoria;
     }
 
+    void Item::setPedidos(const vector<Pedido>& pedidos){
+        this->pedidos = pedidos;
+    }
+
+    vector<Pedido> Item::getPedidos() const {
+        return this->pedidos;
+    }
