@@ -9,17 +9,17 @@ class Categoria{
     public:
         enum Valor{
 
-            alimento, //* 0
-            bebida, //* 1
-            eletronico, //* 2
-            vestuario, //* 3
-            livro, //* 4
-            limpeza //* 5
+            alimento, //! 0
+            bebida, //! 1
+            eletronico, //! 2
+            vestuario, //! 3
+            livro, //! 4
+            limpeza //! 5
         };
 
         Categoria(Valor v): valor(v) {}
 
-        Categoria(): valor(){} //* Inicializando a categoria como alimento por padrão;
+        Categoria(): valor(){} //! Inicializando a categoria como alimento por padrão;
 
         string categoriaToString() const{
             switch (valor)

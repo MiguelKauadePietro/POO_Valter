@@ -1,12 +1,12 @@
 #include <bits/stdc++.h>
-// #include <string>
 #include "Produto.h"
+#include "Categoria.h"
 
 using namespace std;
 
 Produto::Produto() {} //* Construtor Vazio, para padronização de inicialização
-Produto::Produto(const int& c, const string& n, const float& p) //* Construtor Parâmetrizado
-    :codigo(c), nome(n), preco(p){} //* Lista de inicialização
+Produto::Produto(const int& c, const string& n, const float& p, const Categoria& cat ) //* Construtor Parâmetrizado
+    :codigo(c), nome(n), preco(p), categoria(cat) {} //* Lista de inicialização
 
 void Produto::apresentar_produto() const{ //* Função que printa os dados do produto(Código, Nome e Preço)
     cout << "DADOS DO PRODUTO" << endl;
@@ -14,6 +14,7 @@ void Produto::apresentar_produto() const{ //* Função que printa os dados do pr
     cout << "Código: " << codigo << endl;
     cout << "Nome: " << nome << endl;
     cout << "Preço: " << preco << endl;
+    cout << "Categoria do Produto: " << categoria.categoriaToString() << endl;
 
 }
 
@@ -39,4 +40,12 @@ void Produto::setPreco(const float& p){
 
 float Produto::getPreco() const {
     return preco;
+}
+
+void Produto::setCategoria(const Categoria& categoria){
+    this->categoria = categoria;
+}
+
+Categoria Produto::getCategoria() const {
+    return this->categoria;
 }

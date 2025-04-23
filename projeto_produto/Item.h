@@ -8,13 +8,11 @@
 using namespace std;
 
 class Item{
+    //! ATRIBUTOS
     private:
         int numero;
         int quantidade;
-        Produto produto;
-        Categoria categoria;
-        vector<Pedido> pedidos; //* instância para um vetor de pedidos
-    
+        Produto produto; //! Instância para a classe Produto
     public:
         Item();
 
@@ -22,9 +20,7 @@ class Item{
 
         Item(const int& numero, const int& quantidade, const Produto& produto);
 
-        Item(const int& numero, const int& quantidade, const Produto& produto, const Categoria& categoria);
-
-        void exibir_item();
+        void exibir_item() const;
 
         void setNumero(const int& numero);
         int getNumero() const;
@@ -35,18 +31,8 @@ class Item{
         void setProduto(const Produto&);
         Produto getProduto() const;
 
-        void setCategoria(const Categoria&);
-        Categoria getCategoria() const;
-
-        //* Métodos para os pedidos
-
-        //* Gets e Sets de Pedidos
-        void setPedidos(const vector<Pedido>&);
-        vector<Pedido> getPedidos() const;
-
-        Pedido getPedidoPorCodigo(const int& codigo) const; //* Procurando um determinado pedido através de seu código
-
-        void adicionarPedido(const Pedido& p); //* Método para adicionar um pedido ao vetor de Pedidos
+        //! FUNÇÃO QUE CÁLCULA O TOTAL DE UM ITEM
+        float preco_total(const int& quantidade, const Produto& produto);
 };
 
 #endif

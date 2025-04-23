@@ -11,12 +11,13 @@ class Produto{
         int codigo;
         string nome;
         float preco;
+        Categoria categoria; //! Instância para a classe enum Categoria
 
 
     public:
 
         Produto();
-        Produto(const int& c, const string& n, const float& p);
+        Produto(const int& c, const string& n, const float& p, const Categoria& categoria);
         void apresentar_produto() const;
         void setCodigo(const int& c);
         int getCodigo() const;
@@ -24,6 +25,8 @@ class Produto{
         string getNome() const;
         void setPreco(const float& p);
         float getPreco() const;
+        void setCategoria(const Categoria&);
+        Categoria getCategoria() const;
 };
 
 #endif
