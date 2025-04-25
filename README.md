@@ -1,6 +1,6 @@
 # 📦 Sistema de Controle de Estoque em C++
 
-> Um projeto acadêmico orientado a objetos (POO) para gerenciamento de produtos e pedidos, escrito em C++ moderno.
+> Um projeto acadêmico orientado a objetos (POO) para gerenciamento de produtos e pedidos, escrito em C++.
 
 ---
 
