@@ -1,11 +1,15 @@
 #include <bits/stdc++.h>
 #include "Item.h"
+#include "Pedido.h"
+#include "Produto.h"
+#include "Categoria.h"
 
 using namespace std;
 
 //* Vetores globais (simples e diretos)
 vector<Produto> produtos; //* Vetor de Produtos(armazenará os produtos cadastrados)
-vector<Pedido> pedidos; //* Vetor de itens que armazenará os itens quando cadastrarmos pedidos
+vector<Pedido> pedidos; //* Vetor de pedidos que armazenará os pedidos quando cadastrarmos pedidos
+vector<Item> itens;
 
 void exibirMenu() { //* Função que exibe o menu de opções
     cout << "\nMenu:\n";
@@ -97,7 +101,7 @@ void alterarProduto() {
             for (const auto& outro : produtos)
             {
                 if (outro.getNome() == nome && &outro != &p){
-                    cout << "ERRO: Já existe outro produto com esse mesmo código" << endl;
+                    cout << "ERRO: Já existe outro produto com esse mesmo nome" << endl;
                     return;
                 }
             }
@@ -140,35 +144,44 @@ void removerProduto() {
 
 //! FUNÇÃO QUE CADASTRA UM NOVO PEDIDO A PARTIR DO CADASTRO DE UM NOVO ITEM, QUE DEPENDE DO CADASTRO DE PRODUTOS
 void cadastrarPedido() {
-    int numeroItem, codigoProduto, quantidade, codPedido, categoriaValor;
+    int codigoProduto, quantidade, codPedido, qtdProdutos;
+    float total;
     string descricao;
 
-    cout << "Número do novo item: ";
-    cin >> numeroItem;
-
-    cout << "Código do produto: ";
-    cin >> codigoProduto;
-
-    Produto* p = buscarProduto(codigoProduto);
-    if (!p) {
-        cout << "Produto não encontrado.\n";
-        return;
-    }
-
-    cout << "Quantidade: ";
-    cin >> quantidade;
-
+    
     cout << "Código do pedido: ";
     cin >> codPedido;
     cin.ignore();
+
     cout << "Descrição do pedido: ";
     getline(cin, descricao);
 
-    Pedido novoPedido(codPedido, descricao);
+    cout << "Insira a quantidade de produtos que você deseja adicionar: ";
+    cin >> qtdProdutos;
 
-    Item novoItem(numeroItem, quantidade, *p);
-    novoItem.adicionarPedido(novoPedido);
-    itens.push_back(novoItem);
+
+
+    for (int i = 0; i < qtdProdutos; i++)
+    {
+
+        cout << "Código do produto: ";
+        cin >> codigoProduto;
+
+        Produto* p = buscarProduto(codigoProduto);
+        if (!p) {
+            cout << "Produto não encontrado ou não está cadastrado, por favor cadastre este produto.\n";
+            return;
+        }
+
+        cout << "Quantidade: ";
+        cin >> quantidade;
+
+        Item novoItem(i, quantidade, *p);
+        itens.push_back(novoItem);
+    }
+
+    Pedido novoPedido(codPedido, descricao, itens);
+    pedidos.push_back(novoPedido);
 
     cout << "Pedido cadastrado com sucesso!\n";
 }
@@ -185,17 +198,17 @@ void removerItemPedido() {
     int numItem, codPedido;
     cout << "Número do item: ";
     cin >> numItem;
-    cout << "Código do pedido a remover: ";
+    cout << "Código do pedido a ser removido um item: ";
     cin >> codPedido;
 
-    for (auto& i : itens) {
-        if (i.getNumero() == numItem) {
-            vector<Pedido> pedidos = i.getPedidos();
-            for (auto it = pedidos.begin(); it != pedidos.end(); ++it) {
-                if (it->getCodigoPedido() == codPedido) {
-                    pedidos.erase(it);
-                    i.setPedidos(pedidos);
-                    cout << "Pedido removido do item com sucesso!\n";
+    for (auto& p : pedidos) {
+        if (p.getCodigoPedido() == codPedido) {
+            vector<Item> itens = p.getItens();
+            for (auto it = itens.begin(); it != itens.end(); ++it) {
+                if (it->getNumero() == numItem) {
+                    itens.erase(it);
+                    p.setItens(itens);
+                    cout << "Item removido do Pedido com sucesso!\n";
                     return;
                 }
             }
@@ -208,23 +221,25 @@ void removerItemPedido() {
 
 //! FUNÇÃO RESPONSÁVEL POR ADICIONAR UM ITEM À UM PEDIDO
 void adicionarItemPedido() {
-    int numeroItem, codigoProduto, quantidade, codPedido, categoriaValor;
-    string descricao;
+    int numeroItem, codigoProduto, quantidade, codPedido;
 
-    cout << "Número do item existente: ";
-    cin >> numeroItem;
+    cout << "Código do pedido a adicionar um item: ";
+    cin >> codPedido;
 
-    for (auto& i : itens) {
-        if (i.getNumero() == numeroItem) {
-            cout << "Código do pedido a adicionar: ";
-            cin >> codPedido;
+    for (auto& p : pedidos) {
+        if (p.getCodigoPedido() == codPedido) {
+            cout << "Número do item existente: ";
+            cin >> numeroItem;
             cin.ignore();
-            cout << "Descrição do pedido: ";
-            getline(cin, descricao);
 
-            Pedido novoPedido(codPedido, descricao);
-            i.adicionarPedido(novoPedido); //* FUNÇÃO DA CLASSE ITEM RESPOSÁVEL POR ADICIONAR PEDIDO
-
+            for (auto& i : itens)
+            {
+                if (i.getNumero() == numeroItem)
+                {
+                    Item novoItem(numeroItem, quantidade, i.getProduto());
+                    p.adicionarItem(novoItem); //* FUNÇÃO DA CLASSE ITEM RESPOSÁVEL POR ADICIONAR PEDIDO
+                }
+            }
             cout << "Pedido adicionado ao item com sucesso!\n";
             return;
         }
@@ -235,13 +250,13 @@ void adicionarItemPedido() {
 
 //! FUNÇÃO RESPONSÁVEL POR LISTAR TODOS OS PEDIDOS REGISTRADOS, ISSO SE O VETOR DE ITENS NÃO ESTIVER VAZIO
 void listarPedidos() {
-    if (itens.empty()) {
+    if (pedidos.empty()) {
         cout << "Nenhum pedido registrado.\n";
         return;
     }
 
-    for (auto& item : itens) {
-        item.exibir_item();
+    for (const auto& p : pedidos) {
+        p.imprimindo_pedido();
     }
 }
 
@@ -267,14 +282,22 @@ int main() {
         cin >> opcao;
 
         switch (opcao) {
-            case 1: cadastrarProduto(); break;
-            case 2: alterarProduto(); break;
-            case 3: removerProduto(); break;
-            case 4: cadastrarPedido(); break;
-            case 5: removerItemPedido(); break;
-            case 6: adicionarItemPedido(); break;
-            case 7: listarPedidos(); break;
-            case 8: listarProdutos(); break;
+            case 1: cadastrarProduto(); 
+            break;
+            case 2: alterarProduto(); 
+            break;
+            case 3: removerProduto(); 
+            break;
+            case 4: cadastrarPedido(); 
+            break;
+            case 5: removerItemPedido(); 
+            break;
+            case 6: adicionarItemPedido(); 
+            break;
+            case 7: listarPedidos(); 
+            break;
+            case 8: listarProdutos(); 
+            break;
             case 9: cout << "Saindo do sistema...\n"; break;
             default: cout << "Opção inválida.\n";
         }

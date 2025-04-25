@@ -16,6 +16,7 @@ class Pedido{
 
     Pedido(); //* Construtor padrão
     Pedido(const int& codigo, const string& descricao); //* Construtor com parâmetros
+    Pedido(const int& codigo, const string& descricao, const vector<Item>& itens); //* Construtor com parâmetros
 
     //* Printando os dados do pedido
     void imprimindo_pedido() const;
@@ -40,28 +41,9 @@ class Pedido{
     Item getItemPorNumero(const int& num) const; //! Procurando um determinado pedido através de seu código
 
     void adicionarItem(const Item& i); //! Método para adicionar um pedido ao vetor de Pedidos
+
+    void calcularPrecoPedido(const vector<Item>& itens, float& total) const;
 };
 
-// cout << "\nPedidos relacionados a este item:\n";
-// for (const Pedido& pedido: pedidos)
-// {
-//     pedido.imprimindo_pedido();
-// }
-
-// cout << "--------------------------------------------" << endl;
-// }
-
-// Pedido Item::getPedidoPorCodigo(const int& codigo) const{
-// for(const Pedido& pedido: pedidos){
-//     if(pedido.getCodigoPedido() == codigo){
-//         return pedido;
-//     }
-// }
-// throw runtime_error("Esse código não pertence à nenhum Pedido.");
-// }
-
-// void Item::adicionarPedido(const Pedido& pedido){
-// pedidos.push_back(pedido);
-// }
 
 #endif

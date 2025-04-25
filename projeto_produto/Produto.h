@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "Categoria.h"
 #ifndef PRODUTO_H
 #define PRODUTO_H
 

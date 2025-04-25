@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 #include "Item.h"
-#include "Categoria.h"
 
 using namespace std;
 
@@ -15,7 +14,7 @@ using namespace std;
     void Item::exibir_item() const{
         cout << "--------------------------------------------" << endl;
         cout << "Printando DADOS: " << endl;
-        cout << "Número do Produto: " << numero << "\n" << "Quantidade do Produto: " << quantidade << endl; //* Imprimindo a categoria como string e não como enum pela função categoriaToString()
+        cout << "Número do Item: " << numero << "\n" << "Quantidade do Produto: " << quantidade << endl;
 
         produto.apresentar_produto();
 
@@ -49,6 +48,6 @@ using namespace std;
     }
 
     //! CORPO DA FUNÇÃO QUE CALCULA O PREÇO TOTAL DE UM ITEM
-    float Item::preco_total(const int& quantidade, const Produto& produto){
+    float Item::preco_item(const int& quantidade, const Produto& produto) const{
         return this->quantidade * this->produto.getPreco();
     }

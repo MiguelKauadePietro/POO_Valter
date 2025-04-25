@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "Pedido.h"
+#include "Item.h"
 
 using namespace std;
 
@@ -8,16 +9,24 @@ Pedido::Pedido() {}
 Pedido::Pedido(const int& codigo, const string& descricao)
     : codigo(codigo), descricao(descricao) {}
 
+    Pedido::Pedido(const int& codigo, const string& descricao, const vector<Item>& itens)
+    : codigo(codigo), descricao(descricao), itens(itens) {}
+
 void Pedido::imprimindo_pedido() const{
+    float total = 0;
     cout << "IMPRIMINDO DADOS DO PEDIDO" << endl;
     cout << "Código do pedido: " << codigo << endl;
     cout << "Descrição do pedido: " << descricao << endl;
 
-    cout << "\Itens relacionados a este item:\n";
-    for (const Item& item: itens)
+    cout << "Itens relacionados a este pedido:\n";
+    for (const auto& item: itens)
     {
         item.exibir_item();
     }
+
+    calcularPrecoPedido(itens, total);
+
+    cout << "Total à pagar neste pedido foi: " << total << endl;
 }
 
 void Pedido::setCodigoPedido(const int& c){
@@ -55,7 +64,13 @@ Item Pedido::getItemPorNumero(const int& numero) const{
         throw runtime_error("Esse código não pertence à nenhum Pedido.");
     }
     
-    void Pedido::adicionarItem(const Item& item){
-        itens.push_back(item);
+void Pedido::adicionarItem(const Item& item){
+    itens.push_back(item);
+}
+
+void Pedido::calcularPrecoPedido(const vector<Item>& itens, float& total) const{
+    for (const Item& i : itens)
+    {
+        total += i.preco_item(i.getQuantidade(), i.getProduto());
     }
-    
+}

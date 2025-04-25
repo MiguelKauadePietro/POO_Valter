@@ -1,9 +1,7 @@
-#ifndef ITEM_H
-#define ITEM_H
 #include <bits/stdc++.h>
 #include "Produto.h"
-#include "Categoria.h"
-#include "Pedido.h"
+#ifndef ITEM_H
+#define ITEM_H
 
 using namespace std;
 
@@ -32,7 +30,7 @@ class Item{
         Produto getProduto() const;
 
         //! FUNÇÃO QUE CÁLCULA O TOTAL DE UM ITEM
-        float preco_total(const int& quantidade, const Produto& produto);
+        float preco_item(const int& quantidade, const Produto& produto) const;
 };
 
 #endif
