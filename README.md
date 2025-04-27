@@ -10,6 +10,6 @@ E executá-lo com:
 ./estoque
 ```
 
-> Certifique-se de estar com todos os arquivos `.cpp` e `.h` na mesma pasta.
+> Garanta estar com todos os arquivos `.cpp` e `.h` na mesma pasta.
 
 ---
