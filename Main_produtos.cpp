@@ -3,13 +3,15 @@
 #include "Pedido.h"
 #include "Produto.h"
 #include "Categoria.h"
+#include "Cliente.h"
 
 using namespace std;
 
 //* Vetores globais (simples e diretos)
 vector<Produto> produtos; //* Vetor de Produtos(armazenará os produtos cadastrados)
 vector<Pedido> pedidos; //* Vetor de pedidos que armazenará os pedidos quando cadastrarmos pedidos
-vector<Item> itens;
+vector<Item> itens; //* Vetor de Itens que serão relacionados com pedidos
+vector<Cliente> clientes; //* Vetor de Clientes que serão relacionados com pedidos
 
 void exibirMenu() { //* Função que exibe o menu de opções
     cout << "\nMenu:\n";
@@ -306,6 +308,3 @@ int main() {
 
     return 0;
 }
-
-//! Arrumar a relação de 1 para N(1 PEDIDO CONTÉM N ITENS)
-//! CONCERTAR A CATEGORIA, ALTERANDO PARA PRODUTOS E NÃO PARA ITENS

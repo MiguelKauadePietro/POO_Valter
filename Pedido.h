@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "Item.h"
+#include "Cliente.h"
 #ifndef PEDIDO_H
 #define PEDIDO_H
 
@@ -11,12 +12,14 @@ class Pedido{
         int codigo;
         string descricao;
         vector<Item> itens;
+        Cliente *cliente;
 
     public:
 
     Pedido(); //* Construtor padrão
     Pedido(const int& codigo, const string& descricao); //* Construtor com parâmetros
-    Pedido(const int& codigo, const string& descricao, const vector<Item>& itens); //* Construtor com parâmetros
+    Pedido(const int& codigo, const string& descricao, const vector<Item>& itens); //* Construtor com parâmetros(vetor de itens incluido)
+    Pedido(const int& codigo, const string& descricao, const vector<Item>& itens, Cliente *cliente); //* Construtor com parâmetros(vetor de itens e cliente incluidos)
 
     //* Printando os dados do pedido
     void imprimindo_pedido() const;
@@ -31,18 +34,25 @@ class Pedido{
 
     //! MÉTODOS DE ITENS
 
-
-    //! Métodos para os pedidos
-
-    //! Gets e Sets de Pedidos
+    //! Gets e Sets de Itens
     void setItens(const vector<Item>&);
     vector<Item> getItens() const;
 
     Item getItemPorNumero(const int& num) const; //! Procurando um determinado pedido através de seu código
 
+    //! Métodos para manipular os Itens
+
     void adicionarItem(const Item& i); //! Método para adicionar um pedido ao vetor de Pedidos
 
     void calcularPrecoPedido(const vector<Item>& itens, float& total) const;
+
+    //! Métodos referente ao atributo Cliente
+
+    void setCliente(const Cliente *cliente);
+    Cliente *getCliente() const;
+
+    float definirValorComDesconto(float& total, float& totalPrecoDesconto, const Cliente *cli, const vector<Item>& itens);
+
 };
 
 
