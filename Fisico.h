@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "Cliente.h"
+#include "Endereco.h"
 #ifndef FISICO_H
 #define FISICO_H
 
@@ -13,8 +14,8 @@ class Fisico: public Cliente{
     
     public:
         Fisico();
-        Fisico(const int& codigo, const string& nome);
-        Fisico(const int& codigo, const string& nome, const string& cpf);
+        Fisico(const int& codigo, const string& nome, const Endereco& endereco);
+        Fisico(const int& codigo, const string& nome, const Endereco& endereco, const string& cpf);
 
         void setCPF(const string& cpf);
         string getCPF() const;

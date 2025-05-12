@@ -33,7 +33,7 @@ string Endereco::getBairro() const{
 }
 
 void Endereco::setCidade(const string& cidade){
-    this->rua = cidade;
+    this->cidade = cidade;
 }
 
 string Endereco::getCidade() const{

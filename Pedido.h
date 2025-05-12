@@ -48,10 +48,10 @@ class Pedido{
 
     //! Métodos referente ao atributo Cliente
 
-    void setCliente(const Cliente *cliente);
+    void setCliente(Cliente *cliente);
     Cliente *getCliente() const;
 
-    float definirValorComDesconto(float& total, float& totalPrecoDesconto, const Cliente *cli, const vector<Item>& itens);
+    float definirValorComDesconto(float& total, const Cliente *cli) const;
 
 };
 

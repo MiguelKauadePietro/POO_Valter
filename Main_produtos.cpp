@@ -4,6 +4,9 @@
 #include "Produto.h"
 #include "Categoria.h"
 #include "Cliente.h"
+#include "Fisico.h"
+#include "Juridico.h"
+#include "Endereco.h"
 
 using namespace std;
 
@@ -11,7 +14,7 @@ using namespace std;
 vector<Produto> produtos; //* Vetor de Produtos(armazenará os produtos cadastrados)
 vector<Pedido> pedidos; //* Vetor de pedidos que armazenará os pedidos quando cadastrarmos pedidos
 vector<Item> itens; //* Vetor de Itens que serão relacionados com pedidos
-vector<Cliente> clientes; //* Vetor de Clientes que serão relacionados com pedidos
+vector<Cliente*> clientes; //* Vetor de ponteiro para Clientes(motivo: temos uma herança)
 
 void exibirMenu() { //* Função que exibe o menu de opções
     cout << "\nMenu:\n";
@@ -23,9 +26,13 @@ void exibirMenu() { //* Função que exibe o menu de opções
     cout << "6. Adicionar itens a um Pedido\n";
     cout << "7. Listar todos os Pedidos\n";
     cout << "8. Listar todos os Produtos\n";
-    cout << "9. Sair\n";
+    cout << "9. Cadastrar um novo Cliente\n";
+    cout << "10. Listar Clientes\n";
+    cout << "11. Sair\n";
     cout << "Escolha uma opção: ";
 }
+
+#pragma region Funções de Produtos
 
 //! CRIANDO UMA FUNÇÃO ONDE BUSCA A OCORRÊNCIA DE UM PRODUTO, ESSA FUNÇÃO RETORNA UM PONTEIRO, SE ACHAR O PRODUTO ELA RETORNA SEU ENDEREÇO, CASO NÃO ACHE ELA RETORNA UM PONTEIRO NULO(NULLPTR)
 Produto* buscarProduto(int codigo) {
@@ -144,9 +151,36 @@ void removerProduto() {
     cout << "Produto não encontrado.\n";
 }
 
+//! FUNÇÃO RESPONSÁVEL POR LISTAR TODOS OS PRODUTOS REGISTRADOS, ISSO SE O VETOR DE PRODUTOS NÃO ESTIVER VAZIO
+void listarProdutos() {
+    if (produtos.empty()) {
+        cout << "Nenhum produto cadastrado.\n";
+        return;
+    }
+
+    for (const auto& p : produtos) {
+        p.apresentar_produto();
+        cout << "----------------------\n";
+    }
+}
+
+#pragma endregion
+
+#pragma region Funções de Pedidos, Itens e clientes(relacionamento também)
+
+Cliente* buscarCliente(int codigoCliente){
+    for (auto& c : clientes)
+    {
+        if(c->getCodigo() == codigoCliente){
+            return c;
+        }
+    }
+    return nullptr;
+}
+
 //! FUNÇÃO QUE CADASTRA UM NOVO PEDIDO A PARTIR DO CADASTRO DE UM NOVO ITEM, QUE DEPENDE DO CADASTRO DE PRODUTOS
 void cadastrarPedido() {
-    int codigoProduto, quantidade, codPedido, qtdProdutos;
+    int codigoProduto, quantidade, codPedido, qtdProdutos, codCliente;
     float total;
     string descricao;
 
@@ -157,6 +191,15 @@ void cadastrarPedido() {
 
     cout << "Descrição do pedido: ";
     getline(cin, descricao);
+
+    cout << "Código do cliente associado ao pedido: ";
+    cin >> codCliente;
+
+    Cliente* cliente = buscarCliente(codCliente);
+    if (!cliente) {
+        cout << "Cliente não encontrado. Pedido não será cadastrado.\n";
+        return;
+    }
 
     cout << "Insira a quantidade de produtos que você deseja adicionar: ";
     cin >> qtdProdutos;
@@ -178,12 +221,13 @@ void cadastrarPedido() {
         cout << "Quantidade: ";
         cin >> quantidade;
 
-        Item novoItem(i, quantidade, *p);
+        Item novoItem(i + 1, quantidade, *p);
         itens.push_back(novoItem);
     }
 
-    Pedido novoPedido(codPedido, descricao, itens);
+    Pedido novoPedido(codPedido, descricao, itens, cliente);
     pedidos.push_back(novoPedido);
+
 
     cout << "Pedido cadastrado com sucesso!\n";
 }
@@ -262,18 +306,108 @@ void listarPedidos() {
     }
 }
 
-//! FUNÇÃO RESPONSÁVEL POR LISTAR TODOS OS PRODUTOS REGISTRADOS, ISSO SE O VETOR DE PRODUTOS NÃO ESTIVER VAZIO
-void listarProdutos() {
-    if (produtos.empty()) {
-        cout << "Nenhum produto cadastrado.\n";
+int gerarCodigoCliente(){
+    static int proximoCodigo = 1; //! Usando uma variável "static" para manter o valor do código do cliente na memória
+    return proximoCodigo++; //! Depois retorno este código, depois de retornado incremento ele, e como é static, vai manter o valor incrementado, assim evitamos os erros de códigos repetidos pelo erro do user(desprovido de inteligência)
+}
+
+Cliente *cadastrarCliente(){
+    int tipoCliente;
+    int codigoCliente;
+    string nomeCliente;
+
+    //! Cadastro genérico
+
+    cout << "Selecione o tipo de cliente que você deseja cadastrar(1 = Físico, 2 = Jurídico)" << endl;
+    cin >> tipoCliente;
+    cin.ignore();
+
+    //! Método 1:
+    // cout << "Insira o código do cliente que você deseja cadastrar: " << endl;
+    // cin >> codigoCliente;
+
+    // if (buscarCliente(codigoCliente))
+    // {
+    //     cout << "Cliente com este código já existe no sistema!\n" << endl;
+    //     return;
+    // }
+
+    //! Método 2:
+    codigoCliente = gerarCodigoCliente();
+
+    cout << "Insira o nome do cliente: " << endl;
+    getline(cin, nomeCliente);
+
+    //* Cadastro do endereço
+
+    string rua, bairro, cidade;
+    int numeroCasa;
+
+    cout << "Cadastro do endereço: " << endl;
+    cout << "Insira a Rua: ";
+    getline(cin, rua);
+
+    cout << "Insira o Bairro: ";
+    getline(cin, bairro);
+
+    cout << "Insira a Cidade: ";
+    getline(cin, cidade);
+
+    cout << "Insira o Número da casa: ";
+    cin >> numeroCasa;
+    cin.ignore();
+
+    Endereco endereco(rua, numeroCasa, bairro, cidade);
+
+    if (tipoCliente == 1)
+    {
+        string cpf;
+
+        cout << "Insira o CPF: ";
+        getline(cin, cpf);
+
+        Cliente* novo = new Fisico(codigoCliente, nomeCliente, endereco, cpf);
+        clientes.push_back(novo);
+
+        cout << "Cliente cadastrado com sucesso" << endl;
+
+        return novo;
+    }else if(tipoCliente == 2){
+        string cnpj;
+
+        cout << "Insira o CNPJ: ";
+        getline(cin, cnpj);
+
+        Cliente* novo = new Juridico(codigoCliente, nomeCliente, endereco, cnpj);
+        clientes.push_back(novo);
+
+        cout << "Cliente cadastrado com sucesso" << endl;
+
+        return novo;
+    }else{
+        cout << "Tipo inválido" << endl;
+        return nullptr;
+    }
+
+}
+
+void listarClientes(){
+    if (clientes.empty())
+    {
+        cout << "Nenhum cliente cadastrado!" << endl;
         return;
     }
 
-    for (const auto& p : produtos) {
-        p.apresentar_produto();
-        cout << "----------------------\n";
+    cout << "\n=== Lista de Clientes cadastrados ===\n" << endl;
+    
+    for (auto& c : clientes)
+    {
+        c->mostrarDados();
+        cout << endl;
     }
 }
+
+#pragma endregion
 
 //! MAIN
 int main() {
@@ -284,27 +418,32 @@ int main() {
         cin >> opcao;
 
         switch (opcao) {
-            case 1: cadastrarProduto(); 
+            case 1: cadastrarProduto();
             break;
-            case 2: alterarProduto(); 
+            case 2: alterarProduto();
             break;
-            case 3: removerProduto(); 
+            case 3: removerProduto();
             break;
-            case 4: cadastrarPedido(); 
+            case 4: cadastrarPedido();
             break;
-            case 5: removerItemPedido(); 
+            case 5: removerItemPedido();
             break;
-            case 6: adicionarItemPedido(); 
+            case 6: adicionarItemPedido();
             break;
-            case 7: listarPedidos(); 
+            case 7: listarPedidos();
             break;
-            case 8: listarProdutos(); 
+            case 8: listarProdutos();
             break;
-            case 9: cout << "Saindo do sistema...\n"; break;
+            case 9: cadastrarCliente();
+            break;
+            case 10: listarClientes();
+            break;
+            case 11: cout << "Saindo do sistema...\n";
+            break;
             default: cout << "Opção inválida.\n";
         }
 
-    } while (opcao != 9);
+    } while (opcao != 11);
 
     return 0;
 }

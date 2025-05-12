@@ -5,11 +5,11 @@ using namespace std;
 
 Juridico::Juridico() {}
 
-Juridico::Juridico(const int& codigo, const string& nome)
-    : Cliente(codigo, nome) {}
+Juridico::Juridico(const int& codigo, const string& nome, const Endereco& endereco)
+    : Cliente(codigo, nome, endereco) {}
 
-Juridico::Juridico(const int& codigo, const string& nome, const string& cnpj)
-    : Cliente(codigo, nome), cnpj(cnpj) {}
+Juridico::Juridico(const int& codigo, const string& nome, const Endereco& endereco, const string& cnpj)
+    : Cliente(codigo, nome, endereco), cnpj(cnpj) {}
 
 void Juridico::setCNPJ(const string& cnpj){
     this->cnpj = cnpj;

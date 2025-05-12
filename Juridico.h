@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "Cliente.h"
+#include "Endereco.h"
 #ifndef JURIDICO_H
 #define JURIDICO_H
 
@@ -12,8 +13,8 @@ class Juridico: public Cliente {
     
     public:
         Juridico();
-        Juridico(const int& codigo, const string& nome);
-        Juridico(const int& codigo, const string& nome, const string& cnpj);
+        Juridico(const int& codigo, const string& nome, const Endereco& endereco);
+        Juridico(const int& codigo, const string& nome, const Endereco& endereco, const string& cnpj);
 
         void setCNPJ(const string& cnpj);
         string getCNPJ() const;

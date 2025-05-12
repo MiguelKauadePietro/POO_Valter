@@ -5,11 +5,11 @@ using namespace std;
 
 Fisico::Fisico() {}
 
-Fisico::Fisico(const int& codigo, const string& nome)
-    : Cliente(codigo, nome) {}
+Fisico::Fisico(const int& codigo, const string& nome, const Endereco& endereco)
+    : Cliente(codigo, nome, endereco) {}
 
-Fisico::Fisico(const int& codigo, const string& nome, const string& cpf)
-    : Cliente(codigo, nome), cpf(cpf) {}
+Fisico::Fisico(const int& codigo, const string& nome, const Endereco& endereco, const string& cpf)
+    : Cliente(codigo, nome, endereco), cpf(cpf) {}
 
 void Fisico::setCPF(const string& cpf){
     this->cpf = cpf;

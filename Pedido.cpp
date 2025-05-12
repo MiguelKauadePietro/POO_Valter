@@ -17,6 +17,7 @@ Pedido::Pedido(const int& codigo, const string& descricao, const vector<Item>& i
 
 void Pedido::imprimindo_pedido() const{
     float total = 0;
+    float totalDesconto = 0;
     cout << "IMPRIMINDO DADOS DO PEDIDO" << endl;
     cout << "Código do pedido: " << codigo << endl;
     cout << "Descrição do pedido: " << descricao << endl;
@@ -29,7 +30,10 @@ void Pedido::imprimindo_pedido() const{
 
     calcularPrecoPedido(itens, total);
 
-    cout << "Total à pagar neste pedido foi: " << total << endl;
+    totalDesconto = definirValorComDesconto(total, cliente);
+
+    cout << "Total Bruto: " << total << endl;
+    cout << "Total com descontos: " << totalDesconto<< endl;
 
     cliente->mostrarDados();
 }
@@ -82,16 +86,15 @@ void Pedido::calcularPrecoPedido(const vector<Item>& itens, float& total) const{
 
 //! Métodos de Cliente
 
-void Pedido::setCliente(const Cliente *cliente){
-    this->cliente = this->cliente;
+void Pedido::setCliente(Cliente *cliente){
+    this->cliente = cliente;
 }
 
 Cliente* Pedido::getCliente() const{
     return this->cliente;
 }
 
-float Pedido::definirValorComDesconto(float& totalPreco, float& totalPrecoDesconto, const Cliente *cli, const vector<Item>& itens){
-    calcularPrecoPedido(itens, totalPreco);
+float Pedido::definirValorComDesconto(float& totalPreco, const Cliente *cli) const{
 
     return totalPreco * cli->calcularDesconto();
 }
