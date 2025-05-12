@@ -13,7 +13,6 @@ using namespace std;
 //* Vetores globais (simples e diretos)
 vector<Produto> produtos; //* Vetor de Produtos(armazenará os produtos cadastrados)
 vector<Pedido> pedidos; //* Vetor de pedidos que armazenará os pedidos quando cadastrarmos pedidos
-vector<Item> itens; //* Vetor de Itens que serão relacionados com pedidos
 vector<Cliente*> clientes; //* Vetor de ponteiro para Clientes(motivo: temos uma herança)
 
 void exibirMenu() { //* Função que exibe o menu de opções
@@ -30,6 +29,30 @@ void exibirMenu() { //* Função que exibe o menu de opções
     cout << "10. Listar Clientes\n";
     cout << "11. Sair\n";
     cout << "Escolha uma opção: ";
+}
+
+//* Funções Estáticas poderosas para evitar digitação de um campo importante como o "código" e assim evitando o erro humano
+int gerarCodigoCliente(){
+    static int proximoCodigo = 1; //! Usando uma variável "static" para manter o valor do código do cliente na memória
+    return proximoCodigo++; //! Depois retorno este código, depois de retornado incremento ele, e como é static, vai manter o valor incrementado, assim evitamos os erros de códigos repetidos pelo erro do user(desprovido de inteligência)
+}
+
+//! Gerando código do produto automaticamente
+int gerarCodigoProduto() {
+    static int codigo = 1;
+    return codigo++;
+}
+
+//! Gerando código do pedido automaticamente
+int gerarCodigoPedido() {
+    static int codigo = 1;
+    return codigo++;
+}
+
+//! Gerando código do item automaticamente
+int gerarCodigoItem(){
+    static int codigo = 1;
+    return codigo++;
 }
 
 #pragma region Funções de Produtos
@@ -49,13 +72,15 @@ void cadastrarProduto() {
     float preco;
     int categoriaValor;
 
-    cout << "Código do produto: ";
-    cin >> codigo;
+    // cout << "Código do produto: ";
+    // cin >> codigo;
 
-    if (buscarProduto(codigo)) {
-        cout << "Produto com esse código já existe!\n";
-        return;
-    }
+    // if (buscarProduto(codigo)) {
+        //     cout << "Produto com esse código já existe!\n";
+        //     return;
+        // }
+
+    codigo = gerarCodigoProduto();
 
     cin.ignore();
     cout << "Nome do produto: ";
@@ -180,13 +205,17 @@ Cliente* buscarCliente(int codigoCliente){
 
 //! FUNÇÃO QUE CADASTRA UM NOVO PEDIDO A PARTIR DO CADASTRO DE UM NOVO ITEM, QUE DEPENDE DO CADASTRO DE PRODUTOS
 void cadastrarPedido() {
-    int codigoProduto, quantidade, codPedido, qtdProdutos, codCliente;
+    int codigoProduto, quantidade, codPedido, qtdProdutos, codCliente, codItem;
     float total;
     string descricao;
+    vector<Item> itensPedido;
 
     
-    cout << "Código do pedido: ";
-    cin >> codPedido;
+    // cout << "Código do pedido: ";
+    // cin >> codPedido;
+    // cin.ignore();
+
+    codPedido = gerarCodigoPedido();
     cin.ignore();
 
     cout << "Descrição do pedido: ";
@@ -208,6 +237,7 @@ void cadastrarPedido() {
 
     for (int i = 0; i < qtdProdutos; i++)
     {
+        codItem = gerarCodigoItem();
 
         cout << "Código do produto: ";
         cin >> codigoProduto;
@@ -221,11 +251,11 @@ void cadastrarPedido() {
         cout << "Quantidade: ";
         cin >> quantidade;
 
-        Item novoItem(i + 1, quantidade, *p);
-        itens.push_back(novoItem);
+        Item novoItem(codItem, quantidade, *p);
+        itensPedido.push_back(novoItem);
     }
 
-    Pedido novoPedido(codPedido, descricao, itens, cliente);
+    Pedido novoPedido(codPedido, descricao, itensPedido, cliente);
     pedidos.push_back(novoPedido);
 
 
@@ -234,12 +264,6 @@ void cadastrarPedido() {
 
 //! FUNÇÃO RESPONSÁVEL DE REMOVER UM ITEM DE UM PEDIDO, ISSO SE O VETOR DE ITENS NÃO ESTIVER VAZIO
 void removerItemPedido() {
-
-    if (itens.empty())
-    {
-        cout << "Cadastre itens antes de removê-los de pedidos!\n" << endl;
-        return;
-    }
 
     int numItem, codPedido;
     cout << "Número do item: ";
@@ -250,6 +274,13 @@ void removerItemPedido() {
     for (auto& p : pedidos) {
         if (p.getCodigoPedido() == codPedido) {
             vector<Item> itens = p.getItens();
+
+            if (itens.empty())
+            {
+                cout << "Cadastre itens antes!\n" << endl;
+                return;
+            }
+
             for (auto it = itens.begin(); it != itens.end(); ++it) {
                 if (it->getNumero() == numItem) {
                     itens.erase(it);
@@ -258,11 +289,11 @@ void removerItemPedido() {
                     return;
                 }
             }
-            cout << "Pedido não encontrado nesse item.\n";
+            cout << "Item não encontrado nesse pedido.\n";
             return;
         }
     }
-    cout << "Item não encontrado.\n";
+    cout << "Pedido não encontrado.\n";
 }
 
 //! FUNÇÃO RESPONSÁVEL POR ADICIONAR UM ITEM À UM PEDIDO
@@ -274,19 +305,25 @@ void adicionarItemPedido() {
 
     for (auto& p : pedidos) {
         if (p.getCodigoPedido() == codPedido) {
-            cout << "Número do item existente: ";
-            cin >> numeroItem;
-            cin.ignore();
+            cout << "Código do produto a adicionar: ";
+            cin >> codigoProduto;
 
-            for (auto& i : itens)
-            {
-                if (i.getNumero() == numeroItem)
-                {
-                    Item novoItem(numeroItem, quantidade, i.getProduto());
-                    p.adicionarItem(novoItem); //* FUNÇÃO DA CLASSE ITEM RESPOSÁVEL POR ADICIONAR PEDIDO
-                }
+            Produto* produto = buscarProduto(codigoProduto);
+            if (!produto) {
+                cout << "Produto não encontrado.\n";
+                return;
             }
-            cout << "Pedido adicionado ao item com sucesso!\n";
+
+            cout << "Quantidade: ";
+            cin >> quantidade;
+
+            // Número do item é o próximo da sequência
+            int numeroItem = p.getItens().size() + 1;
+
+            Item novoItem(numeroItem, quantidade, *produto);
+            p.adicionarItem(novoItem);
+
+            cout << "Item adicionado ao pedido com sucesso!\n";
             return;
         }
     }
@@ -306,11 +343,6 @@ void listarPedidos() {
     }
 }
 
-int gerarCodigoCliente(){
-    static int proximoCodigo = 1; //! Usando uma variável "static" para manter o valor do código do cliente na memória
-    return proximoCodigo++; //! Depois retorno este código, depois de retornado incremento ele, e como é static, vai manter o valor incrementado, assim evitamos os erros de códigos repetidos pelo erro do user(desprovido de inteligência)
-}
-
 Cliente *cadastrarCliente(){
     int tipoCliente;
     int codigoCliente;
@@ -318,7 +350,7 @@ Cliente *cadastrarCliente(){
 
     //! Cadastro genérico
 
-    cout << "Selecione o tipo de cliente que você deseja cadastrar(1 = Físico, 2 = Jurídico)" << endl;
+    cout << "Selecione o tipo de cliente que você deseja cadastrar(1 = Físico, 2 = Jurídico): ";
     cin >> tipoCliente;
     cin.ignore();
 
@@ -335,7 +367,7 @@ Cliente *cadastrarCliente(){
     //! Método 2:
     codigoCliente = gerarCodigoCliente();
 
-    cout << "Insira o nome do cliente: " << endl;
+    cout << "Insira o nome do cliente: ";
     getline(cin, nomeCliente);
 
     //* Cadastro do endereço
@@ -343,7 +375,7 @@ Cliente *cadastrarCliente(){
     string rua, bairro, cidade;
     int numeroCasa;
 
-    cout << "Cadastro do endereço: " << endl;
+    cout << "Cadastro do endereço: ";
     cout << "Insira a Rua: ";
     getline(cin, rua);
 
@@ -381,7 +413,7 @@ Cliente *cadastrarCliente(){
         Cliente* novo = new Juridico(codigoCliente, nomeCliente, endereco, cnpj);
         clientes.push_back(novo);
 
-        cout << "Cliente cadastrado com sucesso" << endl;
+        cout << "\nCliente cadastrado com sucesso" << endl;
 
         return novo;
     }else{

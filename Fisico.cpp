@@ -24,7 +24,7 @@ void Fisico::mostrarDados() const{
     cout << "IMPRIMINDO DADOS: " << endl;
     cout << "Código: " << getCodigo() << endl;
     cout << "Nome: " << getNome() << endl;
-    cout << "CPF" << cpf << endl;
+    cout << "CPF: " << cpf << endl;
     cout << "-----------------------------" << endl;
 
     endereco.exibirEndereco();

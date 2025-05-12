@@ -24,7 +24,7 @@ void Juridico::mostrarDados() const{
     cout << "IMPRIMINDO DADOS: " << endl;
     cout << "Código: " << getCodigo() << endl;
     cout << "Nome: " << getNome() << endl;
-    cout << "CNPJ" << cnpj << endl;
+    cout << "CNPJ: " << cnpj << endl;
     cout << "-----------------------------" << endl;
 
     endereco.exibirEndereco();

@@ -18,10 +18,13 @@ Pedido::Pedido(const int& codigo, const string& descricao, const vector<Item>& i
 void Pedido::imprimindo_pedido() const{
     float total = 0;
     float totalDesconto = 0;
+    cout << "\n-----------------------------" << endl;
     cout << "IMPRIMINDO DADOS DO PEDIDO" << endl;
     cout << "Código do pedido: " << codigo << endl;
     cout << "Descrição do pedido: " << descricao << endl;
+    cout << "-----------------------------\n" << endl;
 
+    cout << "-----------------------------" << endl;
     cout << "Itens relacionados a este pedido:\n";
     for (const auto& item: itens)
     {
@@ -32,8 +35,12 @@ void Pedido::imprimindo_pedido() const{
 
     totalDesconto = definirValorComDesconto(total, cliente);
 
+    cout << "\n-----------------------------" << endl;
     cout << "Total Bruto: " << total << endl;
     cout << "Total com descontos: " << totalDesconto<< endl;
+    cout << "-----------------------------\n" << endl;
+
+    cout << "Imprimindo dados do cliente associado à esse pedido: \n" << endl;
 
     cliente->mostrarDados();
 }
@@ -96,5 +103,5 @@ Cliente* Pedido::getCliente() const{
 
 float Pedido::definirValorComDesconto(float& totalPreco, const Cliente *cli) const{
 
-    return totalPreco * cli->calcularDesconto();
+    return totalPreco - (totalPreco * cli->calcularDesconto());
 }

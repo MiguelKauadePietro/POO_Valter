@@ -46,6 +46,6 @@ void Endereco::exibirEndereco() const{
     cout << "Rua: " << getRua() << endl;
     cout << "Número da casa: " << getNumeroCasa() << endl;
     cout << "Bairro: " << getBairro() << endl;
-    cout << "Cidade" << getCidade() << endl;
+    cout << "Cidade: " << getCidade() << endl;
     cout << "-----------------------------" << endl;
 }
