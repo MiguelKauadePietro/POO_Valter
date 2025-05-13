@@ -203,7 +203,7 @@ Cliente* buscarCliente(int codigoCliente){
     return nullptr;
 }
 
-//! FUNÇÃO QUE CADASTRA UM NOVO PEDIDO A PARTIR DO CADASTRO DE UM NOVO ITEM, QUE DEPENDE DO CADASTRO DE PRODUTOS
+//! FUNÇÃO QUE CADASTRA UM NOVO PEDIDO A PARTIR DO CADASTRO DE UM NOVO ITEM, QUE DEPENDE DO CADASTRO DE PRODUTOS(Agora depende também do cadastro do Cliente)
 void cadastrarPedido() {
     int codigoProduto, quantidade, codPedido, qtdProdutos, codCliente, codItem;
     float total;
@@ -476,6 +476,11 @@ int main() {
         }
 
     } while (opcao != 11);
+
+    for (Cliente* c : clientes) {
+        delete c;
+    }
+    clientes.clear();
 
     return 0;
 }
