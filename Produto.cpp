@@ -55,7 +55,7 @@ bool Produto::operator==(const Produto& outroProd) const{
 }
 
 bool Produto::operator!=(const Produto& outroProd) const{
-    return *this != outroProd;
+    return codigo != outroProd.codigo;
 }
 
 bool Produto::operator<(const Produto& outro) const {

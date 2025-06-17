@@ -31,6 +31,7 @@ void exibirMenu() { //* Função que exibe o menu de opções
     cout << "Escolha uma opção: ";
 }
 
+
 //* Funções Estáticas poderosas para evitar digitação de um campo importante como o "código" e assim evitando o erro humano
 int gerarCodigoCliente(){
     static int proximoCodigo = 1; //! Usando uma variável "static" para manter o valor do código do cliente na memória
@@ -187,6 +188,20 @@ void listarProdutos() {
         p.apresentar_produto();
         cout << "----------------------\n";
     }
+
+    Produto maisBarato = produtos[0];
+    Produto maisCaro = produtos[0];
+
+    //! Utilizando os operadores sobrecarregados "<" e ">" para achar o produto mais barato e o mais caro
+
+    for (const auto& p : produtos) {
+        if (p < maisBarato) maisBarato = p;
+        if (p > maisCaro) maisCaro = p;
+    }
+
+    cout << "\nProduto mais barato: " << maisBarato.getNome() << " - R$ " << maisBarato.getPreco() << endl;
+    cout << "Produto mais caro: " << maisCaro.getNome() << " - R$ " << maisCaro.getPreco() << endl;
+    cout << "----------------------\n";
 }
 
 #pragma endregion
@@ -210,11 +225,6 @@ void cadastrarPedido() {
     string descricao;
     vector<Item> itensPedido;
 
-    
-    // cout << "Código do pedido: ";
-    // cin >> codPedido;
-    // cin.ignore();
-
     codPedido = gerarCodigoPedido();
     cin.ignore();
 
@@ -232,7 +242,6 @@ void cadastrarPedido() {
 
     cout << "Insira a quantidade de itens que você deseja adicionar: ";
     cin >> qtdProdutos;
-
 
 
     for (int i = 0; i < qtdProdutos; i++)
@@ -504,3 +513,5 @@ int main() {
 
     return 0;
 }
+
+//! Adicionar um estoque para manipulação dos produtos da maneira correta
