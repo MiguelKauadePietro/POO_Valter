@@ -51,3 +51,15 @@ using namespace std;
     float Item::preco_item(const int& quantidade, const Produto& produto) const{
         return this->quantidade * this->produto.getPreco();
     }
+
+    Item Item::operator+(int qtd) const{
+        Item novo = *this; //! Pegando o item atual
+        novo.quantidade += qtd;
+        return novo;
+    }
+
+    Item Item::operator++(){
+        Item temp = *this;
+        ++quantidade;
+        return temp;
+    }

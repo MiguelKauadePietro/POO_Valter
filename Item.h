@@ -31,6 +31,11 @@ class Item{
 
         //! FUNÇÃO QUE CÁLCULA O TOTAL DE UM ITEM
         float preco_item(const int& quantidade, const Produto& produto) const;
+
+        //! Funções de sobrecarga de operadores
+
+        Item operator+(int qtd) const; //! soma de um objeto com um inteiro
+        Item operator++();     //! pós-incremento do obj Item
 };
 
 #endif

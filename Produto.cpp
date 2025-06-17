@@ -49,3 +49,19 @@ void Produto::setCategoria(const Categoria& categoria){
 Categoria Produto::getCategoria() const {
     return this->categoria;
 }
+
+bool Produto::operator==(const Produto& outroProd) const{
+    return codigo == outroProd.codigo;
+}
+
+bool Produto::operator!=(const Produto& outroProd) const{
+    return *this != outroProd;
+}
+
+bool Produto::operator<(const Produto& outro) const {
+    return preco < outro.preco;
+}
+
+bool Produto::operator>(const Produto& outro) const {
+    return preco > outro.preco;
+}

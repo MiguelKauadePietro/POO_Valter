@@ -26,9 +26,12 @@ void Pedido::imprimindo_pedido() const{
 
     cout << "-----------------------------" << endl;
     cout << "Itens relacionados a este pedido:\n";
-    for (const auto& item: itens)
+
+    //! Percorre os itens do pedido utilizando a sobrecarga do operador [] da classe Pedido
+    //! para acessar cada Item por índice e exibir seus dados na tela.
+    for (int i = 0; i < static_cast<int>(itens.size()); ++i)
     {
-        item.exibir_item();
+        (*this)[i].exibir_item(); //! Usando o operador [] sobrecarregado da classe Pedido
     }
 
     calcularPrecoPedido(itens, total);
@@ -104,4 +107,38 @@ Cliente* Pedido::getCliente() const{
 float Pedido::definirValorComDesconto(float& totalPreco, const Cliente *cli) const{
 
     return totalPreco - (totalPreco * cli->calcularDesconto());
+}
+
+//! Corpo da sobrecarga dos operadores:
+
+Item& Pedido::operator[](int i) {
+    if (i < 0 || i >= static_cast<int>(itens.size())) {
+        throw out_of_range("Índice inválido!");
+    }
+    return itens[i];
+}
+
+const Item& Pedido::operator[](int i) const {
+    if (i < 0 || i >= static_cast<int>(itens.size())) {
+        throw out_of_range("Índice inválido!");
+    }
+    return itens[i];
+}
+
+Pedido Pedido::operator+(const Item& item) {
+    Pedido novo = *this;
+    novo.itens.push_back(item);
+    return novo;
+}
+
+Pedido Pedido::operator-(const Item& item) {
+    Pedido novo = *this;
+    for (auto it = novo.itens.begin(); it != novo.itens.end(); ++it) {
+        if (it->getProduto() == item.getProduto()) {
+            novo.itens.erase(it);
+            novo.setItens(novo.itens);
+            break;
+        }
+    }
+    return novo;
 }

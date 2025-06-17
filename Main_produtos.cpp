@@ -230,7 +230,7 @@ void cadastrarPedido() {
         return;
     }
 
-    cout << "Insira a quantidade de produtos que você deseja adicionar: ";
+    cout << "Insira a quantidade de itens que você deseja adicionar: ";
     cin >> qtdProdutos;
 
 
@@ -252,7 +252,20 @@ void cadastrarPedido() {
         cin >> quantidade;
 
         Item novoItem(codItem, quantidade, *p);
-        itensPedido.push_back(novoItem);
+        bool jaExiste = false;
+
+        for (auto& item : itensPedido) {
+            if (item.getProduto() == novoItem.getProduto()) {
+                item = item + quantidade;  //! Usa operador sobrecarregado + da classe Item
+                cout << "Já que o item existe, a quantidade do mesmo foi incrementada!" << endl;
+                jaExiste = true;
+                break;
+            }
+        }
+
+        if (!jaExiste) {
+            itensPedido.push_back(novoItem); //! Usa push_back apenas se não existe
+        }
     }
 
     Pedido novoPedido(codPedido, descricao, itensPedido, cliente);
@@ -283,8 +296,8 @@ void removerItemPedido() {
 
             for (auto it = itens.begin(); it != itens.end(); ++it) {
                 if (it->getNumero() == numItem) {
-                    itens.erase(it);
-                    p.setItens(itens);
+                    Item itemParaRemover = *it;
+                    p = p - itemParaRemover; //! Usa operador sobrecarregado "-" da classe Pedido
                     cout << "Item removido do Pedido com sucesso!\n";
                     return;
                 }
@@ -321,7 +334,7 @@ void adicionarItemPedido() {
             int numeroItem = p.getItens().size() + 1;
 
             Item novoItem(numeroItem, quantidade, *produto);
-            p.adicionarItem(novoItem);
+            p = p + novoItem;
 
             cout << "Item adicionado ao pedido com sucesso!\n";
             return;
@@ -431,7 +444,7 @@ void listarClientes(){
     }
 
     cout << "\n=== Lista de Clientes cadastrados ===\n" << endl;
-    
+
     for (auto& c : clientes)
     {
         c->mostrarDados();
@@ -484,3 +497,7 @@ int main() {
 
     return 0;
 }
+
+//! Caso adicione o mesmo item em "quantos itens você deseja adicionar", para tratar do mesmo código de item(só acrescentar na quantidade)
+
+//! Arrumar o mesmo para a função adicionar itens à um pedido

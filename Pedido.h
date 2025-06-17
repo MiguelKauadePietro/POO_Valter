@@ -53,6 +53,13 @@ class Pedido{
 
     float definirValorComDesconto(float& total, const Cliente *cli) const;
 
+    //! Sobrecarga dos operadores relacionados aos pedidos
+
+    Item& operator[](int index);
+    const Item& operator[](int index) const;
+
+    Pedido operator+(const Item& item);
+    Pedido operator-(const Item& item);
 };
 
 
