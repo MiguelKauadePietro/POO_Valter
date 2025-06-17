@@ -330,11 +330,25 @@ void adicionarItemPedido() {
             cout << "Quantidade: ";
             cin >> quantidade;
 
-            // Número do item é o próximo da sequência
-            int numeroItem = p.getItens().size() + 1;
+            bool itemExistente = false;
 
-            Item novoItem(numeroItem, quantidade, *produto);
-            p = p + novoItem;
+            for (int i = 0; i < p.getItens().size(); ++i)
+            {
+                if (p[i].getProduto() == *produto)
+                {
+                    p[i] = p[i] + quantidade;
+                    itemExistente = true;
+                    break;
+                }
+            }
+
+            if (!itemExistente) //! Se o item não existe, adiciona
+            {
+                // Número do item é o próximo da sequência
+                int numeroItem = p.getItens().size() + 1;
+                Item novoItem(numeroItem, quantidade, *produto);
+                p = p + novoItem;
+            }
 
             cout << "Item adicionado ao pedido com sucesso!\n";
             return;
@@ -367,17 +381,7 @@ Cliente *cadastrarCliente(){
     cin >> tipoCliente;
     cin.ignore();
 
-    //! Método 1:
-    // cout << "Insira o código do cliente que você deseja cadastrar: " << endl;
-    // cin >> codigoCliente;
 
-    // if (buscarCliente(codigoCliente))
-    // {
-    //     cout << "Cliente com este código já existe no sistema!\n" << endl;
-    //     return;
-    // }
-
-    //! Método 2:
     codigoCliente = gerarCodigoCliente();
 
     cout << "Insira o nome do cliente: ";
@@ -498,6 +502,3 @@ int main() {
     return 0;
 }
 
-//! Caso adicione o mesmo item em "quantos itens você deseja adicionar", para tratar do mesmo código de item(só acrescentar na quantidade)
-
-//! Arrumar o mesmo para a função adicionar itens à um pedido
