@@ -264,7 +264,7 @@ void cadastrarPedido() {
         }
 
         if (!jaExiste) {
-            itensPedido.push_back(novoItem); //! Usa push_back apenas se não existe
+            itensPedido.push_back(novoItem); //! Usa push_back apenas se o item não existir
         }
     }
 
@@ -279,10 +279,10 @@ void cadastrarPedido() {
 void removerItemPedido() {
 
     int numItem, codPedido;
-    cout << "Número do item: ";
-    cin >> numItem;
     cout << "Código do pedido a ser removido um item: ";
     cin >> codPedido;
+    cout << "Número do item: ";
+    cin >> numItem;
 
     for (auto& p : pedidos) {
         if (p.getCodigoPedido() == codPedido) {
@@ -392,7 +392,7 @@ Cliente *cadastrarCliente(){
     string rua, bairro, cidade;
     int numeroCasa;
 
-    cout << "Cadastro do endereço: ";
+    cout << "Cadastro do endereço: " << endl;
     cout << "Insira a Rua: ";
     getline(cin, rua);
 
@@ -441,6 +441,7 @@ Cliente *cadastrarCliente(){
 }
 
 void listarClientes(){
+    int i = 1;
     if (clientes.empty())
     {
         cout << "Nenhum cliente cadastrado!" << endl;
@@ -451,7 +452,9 @@ void listarClientes(){
 
     for (auto& c : clientes)
     {
+        cout << "Cliente " << i << ":" << endl;
         c->mostrarDados();
+        i++;
         cout << endl;
     }
 }
@@ -501,4 +504,3 @@ int main() {
 
     return 0;
 }
-

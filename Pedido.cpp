@@ -29,7 +29,7 @@ void Pedido::imprimindo_pedido() const{
 
     //! Percorre os itens do pedido utilizando a sobrecarga do operador [] da classe Pedido
     //! para acessar cada Item por índice e exibir seus dados na tela.
-    for (int i = 0; i < static_cast<int>(itens.size()); ++i)
+    for (int i = 0; i < itens.size(); ++i)
     {
         (*this)[i].exibir_item(); //! Usando o operador [] sobrecarregado da classe Pedido
     }
@@ -110,17 +110,16 @@ float Pedido::definirValorComDesconto(float& totalPreco, const Cliente *cli) con
 }
 
 //! Corpo da sobrecarga dos operadores:
-
 Item& Pedido::operator[](int i) {
-    if (i < 0 || i >= static_cast<int>(itens.size())) {
-        throw out_of_range("Índice inválido!");
+    if (i < 0 || i >= itens.size()) {
+        cout << "Índice inválido" << endl;
     }
     return itens[i];
 }
 
 const Item& Pedido::operator[](int i) const {
-    if (i < 0 || i >= static_cast<int>(itens.size())) {
-        throw out_of_range("Índice inválido!");
+    if (i < 0 || i >= itens.size()) {
+        cout << "Índice inválido" << endl;
     }
     return itens[i];
 }
