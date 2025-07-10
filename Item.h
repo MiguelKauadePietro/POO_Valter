@@ -35,7 +35,6 @@ class Item{
         //! Funções de sobrecarga de operadores
 
         Item operator+(int qtd) const; //! soma de um objeto com um inteiro
-        Item operator++();     //! pós-incremento do obj Item
 };
 
 #endif

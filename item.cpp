@@ -57,9 +57,3 @@ using namespace std;
         novo.quantidade += qtd;
         return novo;
     }
-
-    Item Item::operator++(){
-        Item temp = *this;
-        ++quantidade;
-        return temp;
-    }
