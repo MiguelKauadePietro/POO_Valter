@@ -32,6 +32,8 @@ class Pedido{
     void setDescPedido(const string& n);
     string getDescPedido() const;
 
+    static int gerarCodigoPedido();
+
     //! MÉTODOS DE ITENS
 
     //! Gets e Sets de Itens

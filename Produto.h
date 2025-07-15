@@ -28,6 +28,7 @@ class Produto{
         float getPreco() const;
         void setCategoria(const Categoria&);
         Categoria getCategoria() const;
+        static int gerarCodigoProduto();
 
         //! Sobrecarga dos operadores relacionados aos produtos:
 
@@ -35,6 +36,7 @@ class Produto{
         bool operator!=(const Produto& outroProd) const;
         bool operator<(const Produto& outroProd) const;
         bool operator>(const Produto& outroProd) const;
+        friend ostream& operator<<(ostream& os, const Produto& p);
 };
 
 #endif

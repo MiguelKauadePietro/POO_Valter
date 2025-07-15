@@ -8,6 +8,11 @@
 #include "Juridico.h"
 #include "Endereco.h"
 #include "Estoque.h"
+#include "DescontoClienteOuro.h"
+#include "DescontoPorQuantidade.h"
+#include "CalculadoraDesconto.h"
+#include "EstoqueInsuficienteException.h"
+#include "ProdutoNaoEncontradoException.h"
 
 using namespace std;
 
@@ -19,7 +24,7 @@ vector<Cliente*> clientes; //* Vetor de ponteiro para Clientes(motivo: temos uma
 
 void exibirMenu() { //* Função que exibe o menu de opções
     cout << "\nMenu:\n";
-    cout << "1. Cadastrar novo Produto\n";
+    cout << "1. Cadastrar um novo Produto no estoque\n";
     cout << "2. Alterar um Produto\n";
     cout << "3. Remover um Produto\n";
     cout << "4. Cadastrar um novo Pedido\n";
@@ -29,34 +34,11 @@ void exibirMenu() { //* Função que exibe o menu de opções
     cout << "8. Listar o Estoque\n";
     cout << "9. Cadastrar um novo Cliente\n";
     cout << "10. Listar Clientes\n";
-    cout << "11. Sair\n";
+    cout << "11. Ver Descontos no último Pedido\n";
+    cout << "12. Sair\n";
     cout << "Escolha uma opção: ";
 }
 
-
-//* Funções Estáticas poderosas para evitar digitação de um campo importante como o "código" e assim evitando o erro humano
-int gerarCodigoCliente(){
-    static int proximoCodigo = 1; //! Usando uma variável "static" para manter o valor do código do cliente na memória
-    return proximoCodigo++; //! Depois retorno este código, depois de retornado incremento ele, e como é static, vai manter o valor incrementado, assim evitamos os erros de códigos repetidos pelo erro do user(desprovido de inteligência)
-}
-
-//! Gerando código do produto automaticamente
-int gerarCodigoProduto() {
-    static int codigo = 1;
-    return codigo++;
-}
-
-//! Gerando código do pedido automaticamente
-int gerarCodigoPedido() {
-    static int codigo = 1;
-    return codigo++;
-}
-
-//! Gerando código do item automaticamente
-int gerarCodigoItem(){
-    static int codigo = 1;
-    return codigo++;
-}
 
 #pragma region Funções de Produtos
 
@@ -81,7 +63,7 @@ void cadastrarProduto() {
         //     return;
         // }
 
-    codigo = gerarCodigoProduto();
+    codigo = Produto::gerarCodigoProduto();
 
     cin.ignore();
     cout << "Nome do produto: ";
@@ -126,7 +108,6 @@ void alterarProduto() {
     cout << "Novo código: ";
     cin >> novoCodigo;
 
-    // Verifica se novo código já existe (e não é o mesmo produto)
     Produto* existente = buscarProduto(novoCodigo);
     if (existente && existente != p) {
         cout << "ERRO: Já existe um produto com este código!\n";
@@ -137,7 +118,6 @@ void alterarProduto() {
     cout << "Novo nome: ";
     getline(cin, nome);
 
-    // Verifica se nome já existe
     for (const auto& prod : estoque.getProdutos()) {
         if (prod.getNome() == nome && &prod != p) {
             cout << "ERRO: Já existe outro produto com esse mesmo nome.\n";
@@ -148,13 +128,27 @@ void alterarProduto() {
     cout << "Novo preço: ";
     cin >> preco;
 
-    p->setCodigo(novoCodigo);
-    p->setNome(nome);
-    p->setPreco(preco);
+    // Novo produto atualizado
+    Produto atualizado(novoCodigo, nome, preco, p->getCategoria());
+
+    // Atualiza o produto no estoque
+    bool sucesso = estoque.atualizarProduto(codigo, atualizado);
+    if (!sucesso) {
+        cout << "Erro ao atualizar o produto no estoque.\n";
+        return;
+    }
+
+    // Quantidade (após atualizar o produto)
+    int novaQuantidade;
+    cout << "Deseja alterar a quantidade? (digite -1 para manter): ";
+    cin >> novaQuantidade;
+
+    if (novaQuantidade >= 0) {
+        estoque.atualizarQuantidadePorCodigo(novoCodigo, novaQuantidade);
+    }
 
     cout << "Produto alterado com sucesso!\n";
 }
-
 
 //! FUNÇÃO QUE REMOVE UM PRODUTO DO VETOR GLOBAL DE PRODUTOS A PARTIR DE SEU CÓDIGO, ISSO SE ESSE PRODUTO EXISTIR DENTRO DO VETOR, E TAMBÉM SE O VETOR CONTÉM PRODUTOS
 void removerProduto() {
@@ -225,7 +219,7 @@ void cadastrarPedido() {
     string descricao;
     vector<Item> itensPedido;
 
-    codPedido = gerarCodigoPedido();
+    codPedido = Pedido::gerarCodigoPedido();
     cin.ignore();
 
     cout << "Descrição do pedido: ";
@@ -243,53 +237,59 @@ void cadastrarPedido() {
     cout << "Insira a quantidade de itens que você deseja adicionar: ";
     cin >> qtdProdutos;
 
-    for (int i = 0; i < qtdProdutos; i++) {
-        codItem = gerarCodigoItem();
+    try {
+        for (int i = 0; i < qtdProdutos; i++) {
+            codItem = Item::gerarNumeroItem();
 
-        cout << "Código do produto: ";
-        cin >> codigoProduto;
+            cout << "Código do produto: ";
+            cin >> codigoProduto;
 
-        Produto* p = estoque.buscarProdutoPorCodigo(codigoProduto);
-        if (!p) {
-            cout << "Produto não encontrado.\n";
-            return;
-        }
+            Produto* p = estoque.buscarProdutoPorCodigo(codigoProduto);
 
-        cout << "Quantidade: ";
-        cin >> quantidade;
+            cout << "Quantidade: ";
+            cin >> quantidade;
 
-        int quantidadeDisponivel = estoque.consultarQuantidade(*p);
+            int quantidadeDisponivel = estoque.consultarQuantidade(*p);
 
-        if (quantidadeDisponivel < quantidade) {
-            cout << "Estoque insuficiente para o produto \"" << p->getNome() << "\". Pedido cancelado.\n";
-            return;
-        }
-
-        // Criação e adição do item
-        Item novoItem(codItem, quantidade, *p);
-
-        bool jaExiste = false;
-        for (auto& item : itensPedido) {
-            if (item.getProduto() == novoItem.getProduto()) {
-                item = item + quantidade;  // operador + do Item
-                jaExiste = true;
-                break;
+            if (quantidadeDisponivel < quantidade) {
+                throw EstoqueInsuficienteException();
             }
+
+            // Criação e adição do item
+            Item novoItem(codItem, quantidade, *p);
+
+            bool jaExiste = false;
+            for (auto& item : itensPedido) {
+                if (item.getProduto() == novoItem.getProduto()) {
+                    item = item + quantidade;  // operador + do Item
+                    jaExiste = true;
+                    break;
+                }
+            }
+
+            if (!jaExiste) {
+                itensPedido.push_back(novoItem);
+            }
+
+            // Atualiza o estoque (subtrai)
+            estoque.atualizarQuantidade(*p, quantidadeDisponivel - quantidade);
         }
 
-        if (!jaExiste) {
-            itensPedido.push_back(novoItem);
-        }
+        Pedido novoPedido(codPedido, descricao, itensPedido, cliente);
+        pedidos.push_back(novoPedido);
 
-        // Atualiza o estoque (subtrai)
-        estoque.atualizarQuantidade(*p, quantidadeDisponivel - quantidade);
+        cout << "Pedido cadastrado com sucesso!\n";
     }
-
-    Pedido novoPedido(codPedido, descricao, itensPedido, cliente);
-    pedidos.push_back(novoPedido);
-
-    cout << "Pedido cadastrado com sucesso!\n";
+    catch (const ProdutoNaoEncontradoException& e) {
+        cout << "Erro: " << e.what() << endl;
+        return;
+    }
+    catch (const EstoqueInsuficienteException& e) {
+        cout << "Erro: " << e.what() << endl;
+        return;
+    }
 }
+
 
 
 //! FUNÇÃO RESPONSÁVEL DE REMOVER UM ITEM DE UM PEDIDO, ISSO SE O VETOR DE ITENS NÃO ESTIVER VAZIO
@@ -349,50 +349,57 @@ void adicionarItemPedido() {
     for (auto& pedido : pedidos) {
         if (pedido.getCodigoPedido() == codPedido) {
 
-            cout << "Código do produto a adicionar: ";
-            cin >> codigoProduto;
+            try {
+                cout << "Código do produto a adicionar: ";
+                cin >> codigoProduto;
 
-            Produto* produto = estoque.buscarProdutoPorCodigo(codigoProduto);
-            if (!produto) {
-                cout << "Produto não encontrado.\n";
-                return;
-            }
+                Produto* produto = estoque.buscarProdutoPorCodigo(codigoProduto);
 
-            cout << "Quantidade: ";
-            cin >> quantidade;
+                cout << "Quantidade: ";
+                cin >> quantidade;
 
-            int qtdDisponivel = estoque.consultarQuantidade(*produto);
-            if (qtdDisponivel < quantidade) {
-                cout << "Estoque insuficiente para este produto.\n";
-                return;
-            }
+                int qtdDisponivel = estoque.consultarQuantidade(*produto);
 
-            // Verifica se item já existe no pedido
-            bool itemExistente = false;
-            for (int i = 0; i < pedido.getItens().size(); ++i) {
-                if (pedido[i].getProduto() == *produto) {
-                    pedido[i] = pedido[i] + quantidade;
-                    itemExistente = true;
-                    break;
+                if (qtdDisponivel < quantidade) {
+                    throw EstoqueInsuficienteException();
                 }
+
+                // Verifica se item já existe no pedido
+                bool itemExistente = false;
+                for (int i = 0; i < pedido.getItens().size(); ++i) {
+                    if (pedido[i].getProduto() == *produto) {
+                        pedido[i] = pedido[i] + quantidade;
+                        itemExistente = true;
+                        break;
+                    }
+                }
+
+                if (!itemExistente) {
+                    numeroItem = Item::gerarNumeroItem();
+                    Item novoItem(numeroItem, quantidade, *produto);
+                    pedido = pedido + novoItem;
+                }
+
+                // Atualiza o estoque (subtrai)
+                estoque.atualizarQuantidade(*produto, qtdDisponivel - quantidade);
+
+                cout << "Item adicionado ao pedido com sucesso!\n";
+                return;
             }
-
-            if (!itemExistente) {
-                numeroItem = gerarCodigoItem();
-                Item novoItem(numeroItem, quantidade, *produto);
-                pedido = pedido + novoItem;
+            catch (const ProdutoNaoEncontradoException& e) {
+                cout << "Erro: " << e.what() << endl;
+                return;
             }
-
-            // Atualiza o estoque (subtrai)
-            estoque.atualizarQuantidade(*produto, qtdDisponivel - quantidade);
-
-            cout << "Item adicionado ao pedido com sucesso!\n";
-            return;
+            catch (const EstoqueInsuficienteException& e) {
+                cout << "Erro: " << e.what() << endl;
+                return;
+            }
         }
     }
 
     cout << "Pedido não encontrado.\n";
 }
+
 
 //! FUNÇÃO RESPONSÁVEL POR LISTAR TODOS OS PEDIDOS REGISTRADOS, ISSO SE O VETOR DE ITENS NÃO ESTIVER VAZIO
 void listarPedidos() {
@@ -418,7 +425,7 @@ Cliente *cadastrarCliente(){
     cin.ignore();
 
 
-    codigoCliente = gerarCodigoCliente();
+    codigoCliente = Cliente::gerarCodigoCliente();
 
     cout << "Insira o nome do cliente: ";
     getline(cin, nomeCliente);
@@ -495,6 +502,22 @@ void listarClientes(){
     }
 }
 
+void verDescontosUltimoPedido() {
+    if (pedidos.empty()) {
+        cout << "Nenhum pedido cadastrado.\n";
+        return;
+    }
+
+    Pedido& p = pedidos.back();
+
+    double descOuro = CalculadoraDesconto<DescontoClienteOuro>::calcular(p);
+    double descQtd  = CalculadoraDesconto<DescontoPorQuantidade>::calcular(p);
+
+    cout << "Desconto Cliente Ouro: " << descOuro * 100 << "%" << endl;
+    cout << "Desconto por Quantidade: " << descQtd * 100 << "%" << endl;
+}
+
+
 #pragma endregion
 
 //! MAIN
@@ -526,12 +549,14 @@ int main() {
             break;
             case 10: listarClientes();
             break;
-            case 11: cout << "Saindo do sistema...\n";
+            case 11: verDescontosUltimoPedido();
+            break;
+            case 12: cout << "Saindo do sistema...\n";
             break;
             default: cout << "Opção inválida.\n";
         }
 
-    } while (opcao != 11);
+    } while (opcao != 12);
 
     for (Cliente* c : clientes) {
         delete c;

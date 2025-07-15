@@ -57,3 +57,9 @@ using namespace std;
         novo.quantidade += qtd;
         return novo;
     }
+
+    //! Gerando código do item automaticamente
+    int Item::gerarNumeroItem(){
+        static int codigo = 1;
+        return codigo++;
+    }

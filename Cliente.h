@@ -29,6 +29,8 @@ class Cliente{
 
         virtual float calcularDesconto() const = 0;
 
+        static int gerarCodigoCliente();
+
         virtual ~Cliente() {}
 
 };

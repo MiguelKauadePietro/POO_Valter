@@ -11,10 +11,7 @@ Produto::Produto(const int& c, const string& n, const float& p, const Categoria&
 void Produto::apresentar_produto() const{ //* Função que printa os dados do produto(Código, Nome e Preço)
     cout << "DADOS DO PRODUTO" << endl;
 
-    cout << "Código: " << codigo << endl;
-    cout << "Nome: " << nome << endl;
-    cout << "Preço: " << preco << endl;
-    cout << "Categoria do Produto: " << categoria.categoriaToString() << endl;
+    cout << *this << endl;
 
 }
 
@@ -65,3 +62,18 @@ bool Produto::operator<(const Produto& outro) const {
 bool Produto::operator>(const Produto& outro) const {
     return preco > outro.preco;
 }
+
+ostream& operator<<(ostream& os, const Produto& p) {
+    os << "Código: " << p.codigo << "\n"
+       << "Nome: " << p.nome << "\n"
+       << "Preço: R$ " << fixed << setprecision(2) << p.preco << "\n"
+       << "Categoria: " << p.categoria.categoriaToString();
+    return os;
+}
+
+int Produto::gerarCodigoProduto(){
+    static int codigo = 1;
+    return codigo++;
+}
+
+

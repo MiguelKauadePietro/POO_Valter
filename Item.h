@@ -29,6 +29,8 @@ class Item{
         void setProduto(const Produto&);
         Produto getProduto() const;
 
+        static int gerarNumeroItem();
+
         //! FUNÇÃO QUE CÁLCULA O TOTAL DE UM ITEM
         float preco_item(const int& quantidade, const Produto& produto) const;
 

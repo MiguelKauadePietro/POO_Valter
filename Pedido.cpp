@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 #include "Pedido.h"
 #include "Item.h"
+#include "DescontoClienteOuro.h"
+#include "CalculadoraDesconto.h"
+#include "DescontoPorQuantidade.h"
 
 using namespace std;
 
@@ -17,34 +20,33 @@ Pedido::Pedido(const int& codigo, const string& descricao, const vector<Item>& i
 
 void Pedido::imprimindo_pedido() const{
     float total = 0;
-    float totalDesconto = 0;
+    calcularPrecoPedido(itens, total);
+
     cout << "\n-----------------------------" << endl;
     cout << "IMPRIMINDO DADOS DO PEDIDO" << endl;
     cout << "Código do pedido: " << codigo << endl;
     cout << "Descrição do pedido: " << descricao << endl;
     cout << "-----------------------------\n" << endl;
 
-    cout << "-----------------------------" << endl;
     cout << "Itens relacionados a este pedido:\n";
-
-    //! Percorre os itens do pedido utilizando a sobrecarga do operador [] da classe Pedido
-    //! para acessar cada Item por índice e exibir seus dados na tela.
     for (int i = 0; i < itens.size(); ++i)
-    {
-        (*this)[i].exibir_item(); //! Usando o operador [] sobrecarregado da classe Pedido
-    }
-
-    calcularPrecoPedido(itens, total);
-
-    totalDesconto = definirValorComDesconto(total, cliente);
+        (*this)[i].exibir_item();
 
     cout << "\n-----------------------------" << endl;
-    cout << "Total Bruto: " << total << endl;
-    cout << "Total com descontos: " << totalDesconto<< endl;
+    cout << "Total Bruto: R$ " << fixed << setprecision(2) << total << endl;
+
+    //! Descontos personalizados via template
+    double descOuro = CalculadoraDesconto<DescontoClienteOuro>::calcular(*this);
+    double descQtd = CalculadoraDesconto<DescontoPorQuantidade>::calcular(*this);
+
+    double totalComDescontos = total * (1.0 - descOuro) * (1.0 - descQtd);
+
+    cout << "Desconto Cliente Ouro: " << (descOuro * 100) << "%" << endl;
+    cout << "Desconto por Quantidade: " << (descQtd * 100) << "%" << endl;
+    cout << "Total com Descontos: R$ " << fixed << setprecision(2) << totalComDescontos << endl;
     cout << "-----------------------------\n" << endl;
 
-    cout << "Imprimindo dados do cliente associado à esse pedido: \n" << endl;
-
+    cout << "Imprimindo dados do cliente associado a este pedido: \n" << endl;
     cliente->mostrarDados();
 }
 
@@ -140,4 +142,10 @@ Pedido Pedido::operator-(const Item& item) {
         }
     }
     return novo;
+}
+
+//! Gerando código do pedido automaticamente
+int Pedido::gerarCodigoPedido() {
+    static int codigo = 1;
+    return codigo++;
 }

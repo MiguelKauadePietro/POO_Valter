@@ -28,3 +28,8 @@ void Cliente::setNome(const string& nome){
 string Cliente::getNome() const{
     return this->nome;
 }
+
+int Cliente::gerarCodigoCliente(){
+    static int proximoCodigo = 1; //! Usando uma variável "static" para manter o valor do código do cliente na memória
+    return proximoCodigo++; //! Depois retorno este código, depois de retornado incremento ele, e como é static, vai manter o valor incrementado, assim evitamos os erros de códigos repetidos pelo erro do user(desprovido de inteligência)
+}

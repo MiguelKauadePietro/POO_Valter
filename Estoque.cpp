@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 #include "Estoque.h"
+#include "ProdutoNaoEncontradoException.h"
+#include "EstoqueInsuficienteException.h"
 
 using namespace std;
 
@@ -54,7 +56,7 @@ int Estoque::consultarQuantidade(const Produto& produto) const{
         }
     }
 
-    return 0;
+    throw EstoqueInsuficienteException();
 }
 
 Estoque& Estoque::operator++(int){
@@ -96,7 +98,7 @@ void Estoque::listarEstoque() const{
 
     for (int i = 0; i < quantidades.size(); ++i)
     {
-        cout << quantidades[i] << endl;
+        cout << "Quantidade em Estoque: " << quantidades[i] << endl;
     }
 }
 
@@ -109,6 +111,33 @@ Produto* Estoque::buscarProdutoPorCodigo(const int& codigo){
         }
     }
 
-    return nullptr;
+        throw ProdutoNaoEncontradoException();
     
+}
+
+bool Estoque::atualizarQuantidadePorCodigo(int codigo, int novaQtd){
+    for (int i = 0; i < produtos.size(); ++i)
+    {
+        if (produtos[i].getCodigo() == codigo)
+        {
+            quantidades[i] = novaQtd;
+            return true;
+        }
+    }
+
+    return false;
+    
+}
+
+bool Estoque::atualizarProduto(int codigoAntigo, const Produto& novoProd){
+    for (int i = 0; i < produtos.size(); ++i)
+    {
+        if (produtos[i].getCodigo() == codigoAntigo)
+        {
+            produtos[i] = novoProd;
+            return true;
+        }
+    }
+    return false;
+
 }

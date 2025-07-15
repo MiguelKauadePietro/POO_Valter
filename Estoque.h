@@ -31,6 +31,10 @@ class Estoque{
         const vector<int>& getQuantidade() const;
 
         bool removerProdutoPorCodigo(int codigo);
+
+        bool atualizarQuantidadePorCodigo(int codigo, int novaQtd);
+
+        bool atualizarProduto(int codigoAntigo, const Produto& novoProd);
 };
 
 
